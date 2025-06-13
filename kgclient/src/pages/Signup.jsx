@@ -32,7 +32,7 @@ const Signup = () => {
         console.log(user)
 
         try {
-            const response = await axios.post(`http://localhost:9123/api/v1/user/register`, user, {
+            const response = await axios.post(`https://kgserver-bjy2.onrender.com/api/v1/user/register`, user, {
                 headers: {
                     "Content-Type": "application/json",
                 },
