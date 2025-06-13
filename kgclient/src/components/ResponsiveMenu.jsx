@@ -15,7 +15,7 @@ const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
     <div
       className={`
         ${openNav ? "left-0" : "-left-full"}
-        fixed top-0 bottom-0 z-50 h-screen w-[80%] sm:w-[60%] lg:w-[30%]
+        fixed top-0 bottom-0 z-50 h-screen w-[50%] sm:w-[50%] lg:w-[20%]
         flex flex-col justify-between px-6 pt-12 pb-6
         bg-gradient-to-br from-[#F0F8FF] via-white to-blue-50 dark:from-gray-900 dark:to-gray-800
         text-black dark:text-white shadow-2xl
