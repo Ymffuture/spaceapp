@@ -182,7 +182,7 @@ const Navbar = () => {
                                 {/* <Button className="hidden md:block" onClick={logoutHandler}><FaSignOutAlt className='text-[red]'/></Button> */}
 
                             </div> : <div className='ml-7 md:flex gap-2 '>
-                                <Link to={'/login'}><Button className='bg-[transparent] border-1 border-[gray] text-[black]'>Login</Button></Link>
+                                <Link to={'/login'}><Button className='bg-[transparent] border-1 border-[gray] text-[black] dark:text-white hover:text-[gray]'>Login</Button></Link>
                                 {/* <Link className='hidden md:block' to={'/signup'}><Button>Signup</Button></Link> */}
                             </div>
                         }

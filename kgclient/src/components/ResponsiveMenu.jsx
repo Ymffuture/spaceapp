@@ -1,10 +1,12 @@
 import React from 'react'
-import { FaUserCircle, FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa"
-import { FaChevronRight } from 'react-icons/fa6'
+import {
+  FaUserCircle, FaFacebook, FaInstagram, FaTwitter, FaGithub,
+  FaChevronRight, FaHome, FaBlog, FaInfoCircle, FaCrown
+} from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Button } from './ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { useSelector } from 'react-redux'
 
 const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
   const { user } = useSelector(store => store.auth)
@@ -12,57 +14,67 @@ const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
   return (
     <div
       className={`
-        fixed top-0 bottom-0 z-50 h-screen w-[70%] md:w-[50%] lg:w-[30%]
-        flex flex-col justify-between px-6 pt-10 pb-6
-        bg-gradient-to-br from-[#F0F8FF] via-white to-[#E0F7FF] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700
-        text-black dark:text-white shadow-2xl rounded-r-3xl
-        transition-all duration-500 ease-in-out
         ${openNav ? "left-0" : "-left-full"}
+        fixed top-0 bottom-0 z-50 h-screen w-[80%] sm:w-[60%] lg:w-[30%]
+        flex flex-col justify-between px-6 pt-12 pb-6
+        bg-gradient-to-br from-[#F0F8FF] via-white to-blue-50 dark:from-gray-900 dark:to-gray-800
+        text-black dark:text-white shadow-2xl
+        rounded-r-3xl transition-all duration-300 ease-in-out
       `}
     >
-      {/* User Profile */}
+      {/* Header / Profile */}
       <div>
         <div className="flex items-center gap-4">
           {user ? (
-            <Avatar className="h-14 w-14 shadow-lg ring-2 ring-[#1E90FF]">
+            <Avatar className="h-14 w-14 shadow-xl ring-4 ring-[#1E90FF]">
               <AvatarImage src={user.photoUrl} />
               <AvatarFallback>U</AvatarFallback>
             </Avatar>
           ) : (
             <FaUserCircle className="h-14 w-14 text-[#1E90FF]" />
           )}
+
           <div>
-            <h1 className="text-lg font-semibold">Hello, {user?.firstName || "Guest"}</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Premium Member</p>
+            <h1 className="text-lg font-bold">Hello, {user?.firstName || "Guest"}</h1>
+            <p className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-300 bg-[#bb9f0076] p-1 rounded-full">
+              <FaCrown className="text-yellow-500" /> Premium
+            </p>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="mt-10">
-          <ul className="flex flex-col gap-6 text-base font-medium tracking-wide">
+          <ul className="flex flex-col gap-5 text-lg font-semibold tracking-wide">
             <Link to="/" onClick={() => setOpenNav(false)}>
-              <li className="hover:text-[#1E90FF] transition">🏠 Home</li>
+              <li className="flex items-center gap-2 hover:text-[#1E90FF] transition-all duration-200">
+                <FaHome /> Home
+              </li>
             </Link>
             <Link to="/blogs" onClick={() => setOpenNav(false)}>
-              <li className="hover:text-[#32CD32] transition">📝 Blog</li>
+              <li className="flex items-center gap-2 hover:text-[#1E90FF] transition-all duration-200">
+                <FaBlog /> Blog
+              </li>
             </Link>
             <Link to="/about" onClick={() => setOpenNav(false)}>
-              <li className="hover:text-[#FFD700] transition">📘 About</li>
+              <li className="flex items-center gap-2 hover:text-[#1E90FF] transition-all duration-200">
+                <FaInfoCircle /> About
+              </li>
             </Link>
 
             {user ? (
               <Button
+                variant="glow"
+                className="mt-6 w-full bg-[#32CD32] text-white hover:bg-green-700 transition"
                 onClick={() => {
                   logoutHandler()
                   setOpenNav(false)
                 }}
-                className="mt-6 bg-gradient-to-r from-red-500 via-pink-500 to-yellow-500 text-white font-semibold shadow-xl"
               >
                 Logout
               </Button>
             ) : (
               <Link to="/signup" onClick={() => setOpenNav(false)}>
-                <Button className="mt-6 w-full bg-[#1E90FF] text-white hover:bg-[#0073e6]">
+                <Button className="mt-6 w-full bg-[#1E90FF] text-white hover:bg-blue-700 transition">
                   Signup
                 </Button>
               </Link>
@@ -71,33 +83,33 @@ const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
         </nav>
       </div>
 
-      {/* Social Icons + Close */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          {/* Social Icons */}
-          <div className="flex items-center gap-4 text-xl">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#333] dark:hover:text-white">
-              <FaGithub />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#0077b5]">
-              <FaLinkedin />
-            </a>
-            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#1DA1F2]">
-              <FaXTwitter />
-            </a>
-          </div>
-
-          {/* Close Button */}
-          <button
-            onClick={() => setOpenNav(false)}
-            className="p-2 rounded-full bg-blue-100 dark:bg-gray-700 hover:bg-blue-200 dark:hover:bg-gray-600 transition"
-            aria-label="Close Menu"
-          >
-            <FaChevronRight size={18} />
-          </button>
+      {/* Footer Social Icons + Close */}
+      <div className="flex flex-col items-center">
+        <div className="flex space-x-6 mt-6">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <FaFacebook className="text-[#1E90FF] hover:text-blue-700 text-2xl transition transform hover:scale-110" />
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <FaInstagram className="text-pink-600 hover:text-pink-800 text-2xl transition transform hover:scale-110" />
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+            <FaTwitter className="text-sky-500 hover:text-sky-700 text-2xl transition transform hover:scale-110" />
+          </a>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <FaGithub className="text-gray-800 dark:text-white hover:text-black text-2xl transition transform hover:scale-110" />
+          </a>
         </div>
 
-        <p className="text-xs text-gray-500 text-center dark:text-gray-400">© {new Date().getFullYear()} Quorvex. All rights reserved.</p>
+        {/* Close Button */}
+        <div className="mt-10">
+          <button
+            onClick={() => setOpenNav(false)}
+            className="p-3 rounded-full bg-[#FFD700] hover:bg-yellow-400 dark:bg-gray-700 dark:hover:bg-gray-600 transition"
+            title="Close Menu"
+          >
+            <FaChevronRight size={20} />
+          </button>
+        </div>
       </div>
     </div>
   )
