@@ -11,7 +11,7 @@ const BlogCardList = ({ blog }) => {
     <div className="relative overflow-hidden group bg-white/90 dark:bg-gray-800 dark:border-gray-700 border border-gray-200 dark:border rounded-2xl shadow-xl transition-all duration-300 hover:shadow-2xl p-5 flex flex-col md:flex-row md:gap-10">
       
       {/* Date Badge */}
-      <div className="absolute top-4 right-4 bg-[#FFD700] text-black text-xs font-bold px-3 py-1 rounded-full shadow-md">
+      <div className="absolute top-4 right-4 bg-[#7b6800bc] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
         {formattedDate}
       </div>
 
