@@ -41,7 +41,7 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { FaEdit, FaHome, FaInfoCircle, FaMoon, FaRegEdit, FaSignOutAlt, FaSun } from 'react-icons/fa'
+import { FaCheckCircle, FaEdit, FaHome, FaInfoCircle, FaMoon, FaRegEdit, FaSignOutAlt, FaSun } from 'react-icons/fa'
 import { toggleTheme } from '@/redux/themeSlice'
 import { LiaCommentSolid } from 'react-icons/lia'
 import ResponsiveMenu from './ResponsiveMenu'
@@ -65,6 +65,7 @@ const Navbar = () => {
                 dispatch(setUser(null))
                 toast.success(res.data.message)
             }
+         
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message)
@@ -145,7 +146,9 @@ const Navbar = () => {
                                         </Avatar>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-56 dark:bg-gray-800">
-                                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                        <DropdownMenuLabel className='bg-black text-white rounded flex'>
+                                            {user.email ==='futurekgomotso@gmail.com' ?'Admin':'My Account'} {user.email ==='futurekgomotso@gmail.com' ?<FaCheckCircle/>:''}
+                                        </DropdownMenuLabel>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuGroup className="cursor-pointer">
                                             <DropdownMenuItem onClick={() => navigate('/dashboard/profile')}>
