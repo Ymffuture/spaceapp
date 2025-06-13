@@ -41,7 +41,7 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { FaCheckCircle, FaEdit, FaHome, FaInfoCircle, FaMoon, FaRegEdit, FaSignOutAlt, FaSun } from 'react-icons/fa'
+import { FaCheckCircle, FaEdit, FaHome, FaInfoCircle, FaMoon, FaRegEdit, FaSignInAlt, FaSignOutAlt, FaSun } from 'react-icons/fa'
 import { toggleTheme } from '@/redux/themeSlice'
 import { LiaCommentSolid } from 'react-icons/lia'
 import ResponsiveMenu from './ResponsiveMenu'
@@ -97,13 +97,13 @@ const Navbar = () => {
                     </Link>
                     <div className='relative hidden md:block'>
                         <Input 
-                            placeholder="Search"
+                            placeholder="Search ..."
                             type='search'
-                            className="border border-[#0000002a] dark:bg-gray-900 bg-gray-300 w-[600px] hidden md:block"
+                            className="border-0 dark:bg-gray-900 w-[600px] hidden md:block"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <Search onClick={handleSearch} className='absolute right-[30px] top-[6px] text-[10px] text-[gray] cursor-pointer'/>
+                        <Search onClick={handleSearch} className='absolute right-[30px] top-[6px] text-[10px] text-[#5a5a5a] cursor-pointer'/>
                         
                     </div>
                 </div>
@@ -120,10 +120,24 @@ const Navbar = () => {
                         data-tooltip-id="2"
               data-tooltip-content="About"
                         to={'/about'} className={`cursor-pointer`}><li><FaInfoCircle className='hover:bg-[#0000003f] p-1 text-[25px] rounded-full transition-all' /></li></NavLink>
-                        {/* <NavLink to={'/write-blog'} className={`cursor-pointer`}><li>Write a Blog</li></NavLink> */}
+                        <NavLink onClick={() => navigate('/dashboard/write-blog')}     data-tooltip-id="5"
+              data-tooltip-content="Write a Blog" className={`cursor-pointer`}><FaRegEdit className='hover:bg-[#0000003f] p-1 text-[25px] rounded-full transition-all'/></NavLink>
+                        <NavLink className='md:block'>
+                            <li>
+                                <div onClick={() => dispatch(toggleTheme())} className=" dark:text-white bg-[transparent] text-[gray]"
+                            data-tooltip-id="3"
+              data-tooltip-content="Theme"
+                            >
+                            {
+                                theme === 'light' ? <FaMoon /> : <FaSun />
+                            }
+
+                        </div>
+                            </li>
+                        </NavLink>
                     </ul>
-                    <div className='flex'>
-                        <Button onClick={() => dispatch(toggleTheme())} className=" bg-[gray] dark:text-white rounded-full"
+                    <div className='flex '>
+                           <Button onClick={() => dispatch(toggleTheme())} className=" dark:text-white bg-[transparent] text-[gray] md:hidden shadow-none hover:bg-transparent "
                             data-tooltip-id="3"
               data-tooltip-content="Theme"
                             >
@@ -185,7 +199,7 @@ const Navbar = () => {
                                 {/* <Button className="hidden md:block" onClick={logoutHandler}><FaSignOutAlt className='text-[red]'/></Button> */}
 
                             </div> : <div className='ml-7 md:flex gap-2 '>
-                                <Link to={'/login'}><Button className='bg-[transparent] border-1 border-[gray] text-[black] dark:text-white hover:text-[gray]'>Login</Button></Link>
+                                <Link to={'/login'}><Button className='bg-[transparent] border-1 border-[gray] text-[black] dark:text-white shadow-none hover:bg-transparent hover:text-[gray]'> <FaSignInAlt/> Login</Button></Link>
                                 {/* <Link className='hidden md:block' to={'/signup'}><Button>Signup</Button></Link> */}
                             </div>
                         }
@@ -202,6 +216,7 @@ const Navbar = () => {
              <Tooltip id="2" />
              <Tooltip id="3" />
              <Tooltip id="4" />
+             <Tooltip id="5" />
         </div>
     )
 }

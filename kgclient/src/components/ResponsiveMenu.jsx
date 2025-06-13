@@ -34,9 +34,9 @@ const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
             <FaUserCircle className="h-14 w-14 text-[#1E90FF]" />
           )}
 
-          <div>
+          <div className='relative'>
             <h1 className="text-lg font-bold">Hello, {user?.firstName || "Guest"}</h1>
-            <p className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-300 bg-[#bb9f0076] p-1 rounded-full">
+            <p className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-300 bg-[#bb9f0076] p-1 rounded-full top-[-30px] right-[120px] rotate-[-25deg] absolute zoom-[20%]">
               <FaCrown className="text-yellow-500" /> Premium
             </p>
           </div>
