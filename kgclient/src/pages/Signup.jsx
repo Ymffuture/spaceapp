@@ -53,30 +53,8 @@ const [loading, setLoading] = useState(false)
 
 
         }finally {
-    setLoading(false);
-
-        // try {
-        //     dispatch(setLoading(true))
-        //     const response = await axios.post("", user, {
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //         withCredentials: true,
-        //     });
-        //     if (response.data.success) {
-        //         navigate('/login')
-        //         toast.success(response.data.message)
-        //         // setFormData({ name: "", email: "", password: "", role: "" });
-        //     } else {
-        //         toast(`Error: ${data.message || "Something went wrong"}`);
-        //     }
-        // } catch (error) {
-        //     // toast.error(error.response.data.message);
-        //     console.log(error);
-
-        // } finally {
-        //     dispatch(setLoading(false))
-        // }
+    setLoading(false);       
+       } 
     };
 
     const [showPassword, setShowPassword] = useState(false);
