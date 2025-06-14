@@ -1,9 +1,17 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import heroImg from "../assets/blog.jpg"
 import { Button } from './ui/button'
 import { Link } from 'react-router-dom'
 
 const Hero = () => {
+
+useEffect(() => {
+    document.title = "Home | Qspace-Blog"
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute("content", "Learn more about Qspace, our mission, values, and team.")
+  }, [])
+
   return (
     <section
       className="w-full bg-cover bg-center bg-no-repeat py-20 px-4 md:px-6 relative"
