@@ -52,15 +52,9 @@ const [loading, setLoading] = useState(false)
             toast.error(error.response.data.message)
 
 
-<<<<<<< HEAD
-        }
-
-       
-=======
-        } finally {
+        } finally{
     setLoading(false);       
        } 
->>>>>>> b3feae51577d6b05eab73b72485dc63dad61de2c
     };
 
     const [showPassword, setShowPassword] = useState(false);

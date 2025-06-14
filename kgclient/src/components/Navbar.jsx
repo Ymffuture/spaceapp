@@ -207,9 +207,7 @@ const Navbar = () => {
                             </div>
                         }
                     </div>
-                    {
-                        openNav ? <HiMenuAlt3 onClick={toggleNav} className='w-7 h-7 md:hidden' /> : <HiMenuAlt1 onClick={toggleNav} className='w-7 h-7 md:hidden' />
-                    }
+                  
 
                 </nav>
                 <ResponsiveMenu openNav={openNav} setOpenNav={setOpenNav} logoutHandler={logoutHandler}/>
