@@ -10,7 +10,9 @@ import { toast } from 'sonner'
 import auth from "../assets/auth.jpg"
 
 const Signup = () => {
-
+    
+const [loading, setLoading] = useState(false)
+    
     const navigate = useNavigate()
     const [user, setUser] = useState({
         firstName: "",
@@ -49,7 +51,8 @@ const Signup = () => {
             toast.error(error.response.data.message)
 
 
-        }
+        }finally {
+    setLoading(false);
 
         // try {
         //     dispatch(setLoading(true))
@@ -143,8 +146,9 @@ const Signup = () => {
                                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
                             </div>
-
-                            <Button type="submit" className="w-full">Sign Up</Button>
+<Button type="submit" className="w-full" disabled={loading}>
+  {loading ? "Signing Up..." : "Sign Up"}
+</Button>
                             <p className='text-center text-gray-600 dark:text-gray-300'>Already have an account? <Link to={'/login'}><span className='underline cursor-pointer hover:text-gray-800 dark:hover:text-gray-100'>Sign in</span></Link></p>
                         </form>
                     </CardContent>
