@@ -89,6 +89,9 @@ const Navbar = () => {
             <div className='max-w-7xl mx-auto flex justify-between items-center px-4 md:px-0'>
                 {/* logo section */}
                 <div className='flex gap-7 items-center'>
+                     {
+                        openNav ? <HiMenuAlt3 onClick={toggleNav} className='w-7 h-7 md:hidden' /> : <HiMenuAlt1 onClick={toggleNav} className='w-7 h-7 md:hidden' />
+                    }
                     <Link to={'/'}>
                         <div className='flex gap-2 items-center'>
                             {/* <img src={Logo} alt="" className='w-7 h-7 md:w-10 md:h-10 dark:invert' /> */}

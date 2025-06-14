@@ -1,13 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { useNavigate } from 'react-router-dom'
 import { CalendarDaysIcon, UserCircleIcon } from 'lucide-react'
 import clsx from 'clsx'
+import { FaArrowRight } from 'react-icons/fa6'
 
 const BlogCard = ({ blog }) => {
   const navigate = useNavigate()
-  const date = new Date(blog.createdAt)
-  const formattedDate = date.toLocaleDateString("en-GB")
+  const createdAt = new Date(blog.createdAt)
+  const formattedDate = createdAt.toLocaleDateString("en-GB")
+
+  const [timeAgo, setTimeAgo] = useState("")
+
+  useEffect(() => {
+    const updateTimeAgo = () => {
+      const now = new Date()
+      const diff = Math.floor((now - createdAt) / 1000) // seconds
+
+      if (diff < 60) {
+        setTimeAgo("Just now")
+      } else if (diff < 3600) {
+        const mins = Math.floor(diff / 60)
+        setTimeAgo(`${mins} min${mins > 1 ? 's' : ''} ago`)
+      } else if (diff < 86400) {
+        const hours = Math.floor(diff / 3600)
+        setTimeAgo(`${hours} hour${hours > 1 ? 's' : ''} ago`)
+      } else {
+        const days = Math.floor(diff / 86400)
+        setTimeAgo(`${days} day${days > 1 ? 's' : ''} ago`)
+      }
+    }
+
+    updateTimeAgo()
+    const interval = setInterval(updateTimeAgo, 60000) // update every minute
+
+    return () => clearInterval(interval)
+  }, [blog.createdAt])
 
   return (
     <div className={clsx(
@@ -32,6 +60,9 @@ const BlogCard = ({ blog }) => {
             <span className="font-medium">{blog.author.firstName}</span>
           </div>
           <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-600 dark:text-gray-300 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-800 rounded-full">
+              {timeAgo}
+            </span>
             <CalendarDaysIcon className="h-4 w-4" />
             <span>{formattedDate}</span>
           </div>
@@ -53,7 +84,7 @@ const BlogCard = ({ blog }) => {
             className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-green-500 dark:hover:bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-xl transition-all"
             onClick={() => navigate(`/blogs/${blog._id}`)}
           >
-            Read Full Article
+            Read Full Article <FaArrowRight />
           </Button>
         </div>
       </div>
