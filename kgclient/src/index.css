@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -27,8 +28,9 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -53,32 +55,55 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
-  /* body {
-    @apply bg-background text-foreground;
-  } */
 
   body {
-  @apply bg-gradient-to-br from-[#F0F8FF] to-white;
-}
+    @apply bg-gradient-to-br from-[#F0F8FF] to-white text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
 }
 
-.jodit_toolbar {
-  background-color: #000000;
-  color: rgba(26, 25, 25, 0.806);
-}
+/* Custom components */
 .glass-card {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   background-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
+
+.jodit_toolbar {
+  background-color: #000000;
+  color: rgba(26, 25, 25, 0.806);
+}
+
 .react-select__menu {
   z-index: 9999 !important;
 }
+
+.btn {
+  @apply px-4 py-2 rounded-md font-semibold bg-primary text-primary-foreground hover:opacity-90 transition;
+}
+
+/* Skeleton animation (if used without Shadcn) */
+.skeleton {
+  background-color: hsl(var(--muted));
+  border-radius: 0.375rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
