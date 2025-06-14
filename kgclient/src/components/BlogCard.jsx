@@ -3,7 +3,7 @@ import { Button } from './ui/button'
 import { useNavigate } from 'react-router-dom'
 import { CalendarDaysIcon, UserCircleIcon, CheckCircle } from 'lucide-react'
 import clsx from 'clsx'
-import { FaArrowRight } from 'react-icons/fa6'
+import { FaArrowRight, FaClock } from 'react-icons/fa6'
 
 const BlogCard = ({ blog }) => {
   const navigate = useNavigate()
@@ -68,11 +68,13 @@ const BlogCard = ({ blog }) => {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-600 dark:text-gray-300 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-800 rounded-full">
-              {timeAgo}
+          <FaClock className='text-[#c0ffdc] dark:text-[#99ff99]'/>
+            <span className="text-xs text-gray-600 dark:text-gray-300 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-800 rounded-full flex">
+               {timeAgo}
             </span>
-            <CalendarDaysIcon className="h-4 w-4" />
-            <span>{formattedDate}</span>
+            {/* <CalendarDaysIcon className="h-4 w-4 text-[8px]" /> */}
+
+            {/* <span className=" w-12 text-[12px]">{formattedDate}</span> */}
           </div>
         </div>
 
