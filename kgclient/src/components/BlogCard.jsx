@@ -61,7 +61,7 @@ const BlogCard = ({ blog }) => {
           <div className="flex items-center gap-2">
             <UserCircleIcon className="h-5 w-5 text-blue-500 dark:text-green-400" />
             <span className="font-medium flex items-center gap-1">
-              {blog.author?.firstName}
+              {blog.author?.firstName} <CheckCircle className="h-4 w-4 text-blue-500 dark:text-green-400" title="Verified Admin" />
               {blog.author?.email === "futurekgomotso@gmail.com" && (
                 <CheckCircle className="h-4 w-4 text-blue-500 dark:text-green-400" title="Verified Admin" />
               )}
