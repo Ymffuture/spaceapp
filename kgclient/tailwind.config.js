@@ -20,6 +20,9 @@ export default {
   				DEFAULT: 'hsl(var(--popover))',
   				foreground: 'hsl(var(--popover-foreground))'
   			},
+            animation: {
+        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'
@@ -56,13 +59,4 @@ export default {
   plugins: [require("tailwindcss-animate")],
 }
 
-module.exports = {
-  theme: {
-    extend: {
-      animation: {
-        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-    },
-  },
-}
 
