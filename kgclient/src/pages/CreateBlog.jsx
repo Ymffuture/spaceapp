@@ -23,6 +23,7 @@ const CreateBlog = () => {
     'Blogging', 'Web Development', 'Digital Marketing', 'Cooking',
     'Photography', 'Sports', 'Science', 'Finance',
     'Education', 'Health & Wellness', 'Technology', 'Art & Design',
+    'Other', 
   ];
 
   const tagOptions = tags.map((tag) => ({
@@ -35,7 +36,7 @@ const CreateBlog = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        `http://localhost:9123/api/v1/blog/`,
+        `https://kgserver-bjy2.onrender.com/api/v1/blog/`,
         { title, category: category.value },
         {
           headers: { 'Content-Type': 'application/json' },
