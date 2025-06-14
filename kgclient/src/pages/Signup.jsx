@@ -89,9 +89,10 @@ const [loading, setLoading] = useState(false)
             <div className='flex justify-center items-center flex-1 px-4 md:px-0'>
                 <Card className="w-full max-w-md p-6 shadow-lg rounded-2xl dark:bg-gray-800 dark:border-gray-600">
                     <CardHeader>
-                        <CardTitle>
-                            <h1 className="text-center text-xl font-semibold">Create an account</h1>
-                        </CardTitle>
+                        <CardTitle className="text-center text-xl font-semibold">
+                          Create an account
+                         </CardTitle>
+
                         <p className=' mt-2 text-sm font-serif text-center dark:text-gray-300'>Enter your details below to create your account</p>
                     </CardHeader>
                     <CardContent>
@@ -119,15 +120,15 @@ const [loading, setLoading] = useState(false)
                                     />
                                 </div>
                                 <div>
-    <Label>Username</Label>
-    <Input type="text"
-        placeholder="unique_username"
-        name="userName"
-        value={user.userName}
-        onChange={handleChange}
-        className="dark:border-gray-600 dark:bg-gray-900"
-    />
-</div>
+                                    <Label>Username</Label>
+                                <Input type="text"
+                               placeholder="username"
+                                name="userName"
+                                 value={user.userName}
+                                 onChange={handleChange}
+                                className="dark:border-gray-600 dark:bg-gray-900"
+                                   />
+                                  </div>
 
                             </div>
                             <div>
@@ -158,9 +159,9 @@ const [loading, setLoading] = useState(false)
                                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
                             </div>
-<Button type="submit" className="w-full" disabled={loading}>
-  {loading ? "Signing Up..." : "Sign Up"}
-</Button>
+                         <Button type="submit" className="w-full" disabled={loading}>
+                           {loading ? "Signing Up..." : "Sign Up"}
+                         </Button>
                             <p className='text-center text-gray-600 dark:text-gray-300'>Already have an account? <Link to={'/login'}><span className='underline cursor-pointer hover:text-gray-800 dark:hover:text-gray-100'>Sign in</span></Link></p>
                         </form>
                     </CardContent>
