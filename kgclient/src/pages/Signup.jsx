@@ -52,7 +52,7 @@ const [loading, setLoading] = useState(false)
             toast.error(error.response.data.message)
 
 
-        }finally {
+        } finally {
     setLoading(false);       
        } 
     };
