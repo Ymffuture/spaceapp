@@ -72,7 +72,7 @@ const UpdateBlog = () => {
         formData.append("file", blogData.thumbnail);
         try {
             setLoading(true)
-            const res = await axios.put(`http://localhost:9123/api/v1/blog/${id}`, formData, {
+            const res = await axios.put(`https://kgserver-bjy2.onrender.com/api/v1/blog/${id}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 },
@@ -106,7 +106,7 @@ const UpdateBlog = () => {
 
     const togglePublishUnpublish = async (action) => {
         try {
-            const res = await axios.patch(`http://localhost:9123/api/v1/blog/${id}`, {
+            const res = await axios.patch(`https://kgserver-bjy2.onrender.com/api/v1/blog/${id}`, {
                 params: {
                     action
                 },
@@ -126,7 +126,7 @@ const UpdateBlog = () => {
 
     const deleteBlog = async () => {
         try {
-            const res = await axios.delete(`http://localhost:9123/api/v1/blog/delete/${id}`, { withCredentials: true })
+            const res = await axios.delete(`https://kgserver-bjy2.onrender.com/api/v1/blog/delete/${id}`, { withCredentials: true })
             if (res.data.success) {
                 const updatedBlogData = blog.filter((blogItem) => blogItem?._id !== id);
                 dispatch(setBlog(updatedBlogData))
