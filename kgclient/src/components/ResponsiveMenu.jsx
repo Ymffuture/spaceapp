@@ -35,7 +35,7 @@ const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
           )}
 
           <div>
-            <h1 className="text-lg font-bold">Hello, {user.userName || "Guest"}</h1>
+            <h1 className="text-lg font-bold">Hello, {user?.firstName || "Guest"}</h1>
             <p className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-300 bg-[#bb9f0076] p-1 rounded-full">
               <FaCrown className="text-yellow-500" /> Premium
             </p>
