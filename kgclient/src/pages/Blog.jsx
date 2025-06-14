@@ -69,7 +69,7 @@ const Blog = () => {
     useEffect(() => {
         const getAllPublsihedBlogs = async () => {
             try {
-                const res = await axios.get(`http://localhost:9123/api/v1/blog/get-published-blogs`, { withCredentials: true })
+                const res = await axios.get(`https://kgserver-bjy2.onrender.com/api/v1/blog/get-published-blogs`, { withCredentials: true })
                 if (res.data.success) {
                     dispatch(setBlog(res.data.blogs))
                 }
