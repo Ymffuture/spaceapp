@@ -100,7 +100,7 @@ const BlogView = () => {
     return (
         <>
        <Helmet>
-        <title>view-{seletedBolg.title} Blog| Qspace</title>
+        <title>view-{seletedBlog.title} Blog| Qspace</title>
         <meta name="description" content="Read our latest tech, coding, and career articles." />
       </Helmet>
             
