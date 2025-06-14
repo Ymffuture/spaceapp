@@ -9,7 +9,7 @@ const PopularAuthors = () => {
 
   const getAllUsers = async () => {
     try {
-      const res = await axios.get(`http://localhost:9123/api/v1/user/all-users`);
+      const res = await axios.get(`https://kgserver-bjy2.onrender.com/api/v1/user/all-users`);
       if (res.data.success) {
         setPopularUser(res.data.users);
       }

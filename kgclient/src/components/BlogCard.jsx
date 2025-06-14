@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { useNavigate } from 'react-router-dom'
-import { CalendarDaysIcon, UserCircleIcon } from 'lucide-react'
+import { CalendarDaysIcon, UserCircleIcon, CheckCircle } from 'lucide-react'
 import clsx from 'clsx'
 import { FaArrowRight } from 'react-icons/fa6'
 
@@ -42,14 +42,17 @@ const BlogCard = ({ blog }) => {
       "group transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-3xl shadow-xl overflow-hidden",
       "hover:shadow-2xl hover:scale-[1.02] hover:border-blue-500 dark:hover:border-green-500"
     )}>
-      {/* Thumbnail */}
-      <div className="relative">
-        <img
-          src={blog.thumbnail}
-          alt={blog.title}
-          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105 rounded-t-3xl"
-        />
-      </div>
+      
+      {/* Only render thumbnail if it exists */}
+      {blog.thumbnail && (
+        <div className="relative">
+          <img
+            src={blog.thumbnail}
+            alt={blog.title}
+            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105 rounded-t-3xl"
+          />
+        </div>
+      )}
 
       {/* Content */}
       <div className="p-5 space-y-2">
@@ -57,7 +60,12 @@ const BlogCard = ({ blog }) => {
         <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center gap-2">
             <UserCircleIcon className="h-5 w-5 text-blue-500 dark:text-green-400" />
-            <span className="font-medium">{blog.author.firstName}</span>
+            <span className="font-medium flex items-center gap-1">
+              {blog.author?.firstName}
+              {blog.author?.email === "futurekgomotso@gmail.com" && (
+                <CheckCircle className="h-4 w-4 text-blue-500 dark:text-green-400" title="Verified Admin" />
+              )}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-600 dark:text-gray-300 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-800 rounded-full">
@@ -93,3 +101,4 @@ const BlogCard = ({ blog }) => {
 }
 
 export default BlogCard
+

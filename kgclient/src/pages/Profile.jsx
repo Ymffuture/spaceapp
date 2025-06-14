@@ -67,7 +67,7 @@ const Profile = () => {
 
     try {
       setLoading(true);
-      const res = await axios.put(`http://localhost:9123/api/v1/user/profile/update`, formData, {
+      const res = await axios.put(`https://kgserver-bjy2.onrender.com/api/v1/user/profile/update`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
       });

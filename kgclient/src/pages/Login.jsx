@@ -42,7 +42,7 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:9123/api/v1/user/login`,
+        `https://kgserver-bjy2.onrender.com/api/v1/user/login`,
         input,
         {
           headers: {
