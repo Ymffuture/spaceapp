@@ -20,7 +20,7 @@ import axios from 'axios'
 import { FaHeart, FaRegHeart } from 'react-icons/fa6'
 import { setBlog } from '@/redux/blogSlice'
 import { toast } from 'sonner'
-
+import {Helmet} from 'react-helmet' 
 const BlogView = () => {
     const params = useParams()
     const blogId = params.blogId
@@ -98,7 +98,13 @@ const BlogView = () => {
         window.scrollTo(0,0)
       },[])
     return (
-        <div className="pt-16 bg-background text-foreground">
+        <>
+       <Helmet>
+        <title>view-{seletedBolg.title} Blog| Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+            
+  <div className="pt-16 bg-background text-foreground">      
   <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-0">
     {/* Breadcrumb */}
     <Breadcrumb className="text-sm text-muted-foreground mb-6">
@@ -202,7 +208,7 @@ const BlogView = () => {
     </Card>
   </div>
 </div>
-
+        </>
     )
 }
 
