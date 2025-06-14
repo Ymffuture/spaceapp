@@ -17,6 +17,7 @@ const [loading, setLoading] = useState(false)
     const [user, setUser] = useState({
         firstName: "",
         lastName: "",
+        userName:"", 
         email: "",
         password: "",
     });
@@ -117,6 +118,17 @@ const [loading, setLoading] = useState(false)
                                         className="dark:border-gray-600 dark:bg-gray-900"
                                     />
                                 </div>
+                                <div>
+    <Label>Username</Label>
+    <Input type="text"
+        placeholder="unique_username"
+        name="userName"
+        value={user.userName}
+        onChange={handleChange}
+        className="dark:border-gray-600 dark:bg-gray-900"
+    />
+</div>
+
                             </div>
                             <div>
                                 <Label>Email</Label>
