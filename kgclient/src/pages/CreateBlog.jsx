@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import Select from 'react-select';
-
+import {Helmet} from 'react-helmet' ;
 const CreateBlog = () => {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
@@ -59,6 +59,12 @@ const CreateBlog = () => {
   };
 
   return (
+    <>
+    <Helmet>
+        <title>Create Blog | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+    
     <div className='min-h-screen w-full md:ml-[320px] pt-20 p-4 bg-gradient-to-br from-[#f0f8ff] to-[#ffffff] dark:from-gray-900 dark:to-gray-800 transition-all'>
       <Card className='glass-card md:p-10 p-5 backdrop-blur-lg bg-white/50 dark:bg-gray-800/70 shadow-xl rounded-2xl border border-slate-200 dark:border-gray-700 max-w-2xl mx-auto'>
         <h1 className='text-3xl font-bold mb-2 text-blue-700 dark:text-blue-400'>Create a New Blog</h1>
@@ -130,6 +136,7 @@ const CreateBlog = () => {
         </div>
       </Card>
     </div>
+    </>
   );
 };
 
