@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'sonner'
 import auth from "../assets/auth.jpg"
-
+import {Helmet} from 'react-helmet' ;
 const Signup = () => {
     
 const [loading, setLoading] = useState(false)
@@ -60,6 +60,12 @@ const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
 
     return (
+        <>
+        <Helmet>
+        <title>Sign up | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+        
         <div className="flex  h-screen md:pt-14 md:h-[760px] ">
             <div className='hidden md:block'>
                 <img src={auth} alt="" className='h-[700px]'  />
@@ -147,6 +153,7 @@ const [loading, setLoading] = useState(false)
 
             </div>
         </div>
+        </>
     )
 }
 
