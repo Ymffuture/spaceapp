@@ -94,7 +94,7 @@ const Navbar = () => {
                     }
                     <Link to={'/'}>
                         <div className='flex gap-2 items-center'>
-                             <img src={Logo} alt="" className='w-7 h-7 md:w-10 md:h-10 dark:invert' /> 
+                             <img src={Logo} alt="Qspace" className='w-7 h-7 md:w-10 md:h-10 dark:invert' /> 
                             {/*    <h1 className='font-bold text-3xl md:text-4xl'>Qspace</h1>*/}
                         </div>
                     </Link>
