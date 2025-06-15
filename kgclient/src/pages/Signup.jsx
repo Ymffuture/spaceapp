@@ -147,6 +147,13 @@ const [loading, setLoading] = useState(false)
                            {loading ? "Signing Up..." : "Sign Up"}
                          </Button>
                             <p className='text-center text-gray-600 dark:text-gray-300'>Already have an account? <Link to={'/login'}><span className='underline cursor-pointer hover:text-gray-800 dark:hover:text-gray-100'>Sign in</span></Link></p>
+                            {/* Terms + Privacy links */}
+                <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  By logging in, you agree to our{" "}
+                  <Link to="/terms" className="underline hover:text-[#1E90FF]">Terms of Service</Link>{" "}
+                  and{" "}
+                  <Link to="/privacy" className="underline hover:text-[#1E90FF]">Privacy Policy</Link>.
+                </p>
                         </form>
                     </CardContent>
                 </Card>
