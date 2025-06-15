@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import BlogCard from '@/components/BlogCard';
 import { motion } from 'framer-motion';
 import { FiSearch } from 'react-icons/fi';
-
+import {Helmet} from 'react-helmet' ;
 const SearchList = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -23,6 +23,13 @@ const SearchList = () => {
   }, []);
 
   return (
+
+    <>
+    <Helmet>
+        <title>Search results - {query} | Qspace</title>
+        <meta name="description" content="Search latest tech, coding, and career articles." />
+      </Helmet>
+    
     <div className="pt-28 pb-16 px-4 min-h-screen bg-gradient-to-b from-[#f0f8ff] via-white to-[#e8f5e9] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="max-w-6xl mx-auto">
         <motion.h2
@@ -69,6 +76,7 @@ const SearchList = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
