@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 
 const PrivacyPolicy = () => {
   return (
-    <section className="max-w-4xl mx-auto px-6 py-10 text-gray-800 dark:text-gray-200">
+    <section className="max-w-4xl mx-auto px-6 py-0 text-gray-800 dark:text-gray-200">
       <Helmet>
         <title>Privacy Policy | Qspace Blog</title>
         <meta name="description" content="Understand how we handle your data on Qspace Blog." />
