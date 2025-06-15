@@ -22,7 +22,7 @@ import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { setUser } from '@/redux/authSlice';
 import TotalProperty from '@/components/TotalProperty';
-
+import {Helmet} from 'react-helmet' ;
 const Profile = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -84,6 +84,13 @@ const Profile = () => {
   };
 
   return (
+
+    <>
+    <Helmet>
+        <title>{user?.firstName}'s profile | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+    
     <div className="pt-24 p-3 pr-22 md:ml-[320px] min-h-screen bg-gradient-to-br from-[#F0F8FF] to-white dark:from-[#111827] dark:to-[#1f2937]">
       <div className="max-w-6xl mx-auto px-4 md:px-0">
         <Card className="backdrop-blur-md bg-white/80 dark:bg-[#1f2937]/80 border shadow-lg rounded-3xl p-6 md:p-10 flex flex-col md:flex-row gap-10">
@@ -93,7 +100,7 @@ const Profile = () => {
               <AvatarImage src={user?.photoUrl || userLogo} />
             </Avatar>
             <h1 className="text-center font-semibold text-xl text-gray-700 dark:text-gray-100">
-              {user?.occupation || 'MERN Stack Developer'}
+              {user?.occupation || user?.firstName }
             </h1>
             <div className="flex gap-5 mt-2 text-xl">
               <Link to={user?.facebook || '#'} target="_blank">
@@ -115,9 +122,7 @@ const Profile = () => {
           <div className="flex-1 space-y-6">
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-4xl font-extrabold text-gray-800 dark:text-white">
-                  Welcome, {user?.firstName}!
-                </h1>
+                
                 <p className="text-[whitesmoke] dark:text-gray-400 mt-1 bg-[#6bfb6b] rounded-full p-2">
                   <span className="font-semibold">Email:</span> {user?.email}
                 </p>
@@ -207,6 +212,7 @@ const Profile = () => {
         <TotalProperty />
       </div>
     </div>
+    </>
   );
 };
 
