@@ -4,7 +4,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
 import AnimatedVisionLogo from './components/AnimatedVisionLogo' // Custom loader
-
+import NotFound from './pages/NotFound';
 // Lazy load pages
 const Home = lazy(() => import('./pages/Home'))
 const Blog = lazy(() => import('./pages/Blog'))
@@ -43,6 +43,11 @@ const router = createBrowserRouter([
     path: "/privacy",
     element: <><Navbar /><PrivacyPolicy /></>
   },
+  {
+    path: "/*",
+    element: <><NotFound /></>
+  },
+  
   {
     path: "/search",
     element: <><Navbar /><SearchList /><Footer/></>
