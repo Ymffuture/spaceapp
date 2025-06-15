@@ -1,8 +1,16 @@
 import React from 'react';
 import aboutImg from "../assets/About-blog.avif"
-
+import {Helmet} from 'react-helmet' ;
 const About = () => {
+  
   return (
+    <>
+    <Helmet>
+        <title>About Us | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+    
+    
     <div className=" min-h-screen pt-28 px-4 md:px-0 mb-7 ">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
@@ -48,6 +56,7 @@ const About = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
