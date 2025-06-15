@@ -183,7 +183,7 @@ const Navbar = () => {
               className="absolute left-12 top-0 w-60 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-4 z-50"
             >
               <p className="text-sm font-bold text-[#1E90FF]">
-                {user.name || 'User'}
+                {user?.firstName || 'Qspace'}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                 {user.email}
