@@ -20,7 +20,7 @@ const Comments = lazy(() => import('./pages/Comments'))
 const Signup = lazy(() => import('./pages/Signup'))
 const Login = lazy(() => import('./pages/Login'))
 const Terms = lazy(()=>import('./pages/Terms' ))
-const PrivatePolicy = lazy(()=>import('./pages/PrivatePolicy')) 
+const PrivacyPolicy = lazy(()=>import('./pages/PrivacyPolicy')) 
 // Main router
 const router = createBrowserRouter([
   {
