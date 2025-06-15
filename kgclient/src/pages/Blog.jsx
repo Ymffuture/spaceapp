@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setBlog } from '@/redux/blogSlice'
 import { Sparkles, Send } from 'lucide-react'
 // import BlogCardList from '@/components/BlogCardList'
-
+import {Helmet} from 'react-helmet';
 export const blogJson = [
     {
         "id": 1,
@@ -82,6 +82,11 @@ const Blog = () => {
     },[])
 
     return (
+<>
+        <Helmet>
+        <title>Recent Blogs | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
         <div className='pt-16'>
              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white flex items-center justify-center gap-2">
                        <Sparkles className="text-[#1E90FF]" />
@@ -95,6 +100,7 @@ const Blog = () => {
                 }
             </div>
         </div>
+          </>
     )
 }
 
