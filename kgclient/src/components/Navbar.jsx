@@ -55,7 +55,9 @@ const Navbar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     // const user = false;
-
+const ProfileMenu = ({ user, logoutHandler }) => {
+  const navigate = useNavigate()
+  const [hovered, setHovered] = useState(false)
     const logoutHandler = async (e) => {
 
         try {
@@ -155,48 +157,125 @@ const Navbar = () => {
               data-tooltip-content="Profile"
                             >
                                 {/* <Link to={'/profile'}> */}
-                                <DropdownMenu className="">
-                                    <DropdownMenuTrigger asChild>
-                                        <Avatar className="cursor-pointer">
-                                            <AvatarImage src={user.photoUrl || userLogo} />
-                                            <AvatarFallback><FaUser/></AvatarFallback>
-                                        </Avatar>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="w-56 dark:bg-gray-800">
-                                        <DropdownMenuLabel className='bg-black text-white rounded flex'>
-                                            {user.email ==='futurekgomotso@gmail.com' ?'Admin':'My Account'} {user.email ==='futurekgomotso@gmail.com' ?<FaCheckCircle/>:''}
-                                        </DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuGroup className="cursor-pointer">
-                                            <DropdownMenuItem onClick={() => navigate('/dashboard/profile')}>
-                                                <User />
-                                                <span>Profile</span>
-                                                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => navigate('/dashboard/your-blog')}>
-                                                <ChartColumnBig />
-                                                <span>Your Blog</span>
-                                                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => navigate('/dashboard/comments')}>
-                                                <LiaCommentSolid />
-                                                <span>Comments</span>
-                                                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => navigate('/dashboard/write-blog')}>
-                                                <FaRegEdit />
-                                                <span>Write Blog</span>
-                                                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                                            </DropdownMenuItem>
-                                        </DropdownMenuGroup>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={logoutHandler} className='hover:bg-[pink]'>
-                                            <LogOut className='text-[red]'/>
-                                            <span className='text-[red] font-semibold'>Log out</span>
-                                            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                <DropdownMenu>
+      <div
+        className="relative group"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <DropdownMenuTrigger asChild>
+          <Avatar className="cursor-pointer hover:scale-105 transition-all duration-300 shadow-md">
+            <AvatarImage src={user.photoUrl || '/user.png'} />
+            <AvatarFallback className="bg-[#1E90FF] text-white">
+              <FaUser />
+            </AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+
+        {/* Profile Preview Card */}
+        <AnimatePresence>
+          {hovered && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="absolute left-12 top-0 w-60 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-4 z-50"
+            >
+              <p className="text-sm font-bold text-[#1E90FF]">
+                {user.name || 'User'}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                {user.email}
+              </p>
+              {user.email === 'futurekgomotso@gmail.com' && (
+                <span className="text-[10px] text-white bg-[#FFD700] px-2 py-[2px] rounded-full mt-1 inline-block">
+                  Admin <FaCheckCircle className="inline ml-1" />
+                </span>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <AnimatePresence>
+        <DropdownMenuContent
+          asChild
+          side="bottom"
+          align="end"
+          className="w-64 bg-white dark:bg-[#1a1a1a] border dark:border-gray-700 rounded-xl p-2 shadow-2xl z-50"
+        >
+          <motion.div
+            key="dropdown"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <DropdownMenuLabel className="flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-sm text-white bg-gradient-to-r from-[#1E90FF] via-[#32CD32] to-[#FFD700]">
+              {user.email === 'futurekgomotso@gmail.com' ? (
+                <>
+                  Admin <FaCheckCircle />
+                </>
+              ) : (
+                'My Account'
+              )}
+            </DropdownMenuLabel>
+
+            <DropdownMenuSeparator className="my-2 border-t dark:border-gray-700" />
+
+            <DropdownMenuGroup className="space-y-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+              <DropdownMenuItem
+                onClick={() => navigate('/dashboard/profile')}
+                className="flex items-center gap-2 px-3 py-2 hover:bg-[#F0F8FF] dark:hover:bg-[#2a2a2a] rounded-lg transition"
+              >
+                <User className="text-[#1E90FF]" />
+                <span>Profile</span>
+                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => navigate('/dashboard/your-blog')}
+                className="flex items-center gap-2 px-3 py-2 hover:bg-[#F0F8FF] dark:hover:bg-[#2a2a2a] rounded-lg transition"
+              >
+                <ChartColumnBig className="text-[#32CD32]" />
+                <span>Your Blog</span>
+                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => navigate('/dashboard/comments')}
+                className="flex items-center gap-2 px-3 py-2 hover:bg-[#F0F8FF] dark:hover:bg-[#2a2a2a] rounded-lg transition"
+              >
+                <LiaCommentSolid className="text-[#FFD700]" />
+                <span>Comments</span>
+                <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => navigate('/dashboard/write-blog')}
+                className="flex items-center gap-2 px-3 py-2 hover:bg-[#F0F8FF] dark:hover:bg-[#2a2a2a] rounded-lg transition"
+              >
+                <FaRegEdit className="text-[#1E90FF]" />
+                <span>Write Blog</span>
+                <DropdownMenuShortcut>⌘W</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+
+            <DropdownMenuSeparator className="my-2 border-t dark:border-gray-700" />
+
+            <DropdownMenuItem
+              onClick={logoutHandler}
+              className="flex items-center gap-2 px-3 py-2 hover:bg-red-100 dark:hover:bg-red-800 rounded-lg transition font-semibold text-red-600"
+            >
+              <LogOut />
+              <span>Log out</span>
+              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </motion.div>
+        </DropdownMenuContent>
+      </AnimatePresence>
+    </DropdownMenu>
                                 {/* </Link> */}
 
                                 {/* <Button className="hidden md:block" onClick={logoutHandler}><FaSignOutAlt className='text-[red]'/></Button> */}
