@@ -136,6 +136,13 @@ const Login = () => {
                   Sign up
                 </Link>
               </p>
+              {/* Terms + Privacy links */}
+                <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  By logging in, you agree to our{" "}
+                  <Link to="/terms" className="underline hover:text-[#1E90FF]">Terms of Service</Link>{" "}
+                  and{" "}
+                  <Link to="/privacy" className="underline hover:text-[#1E90FF]">Privacy Policy</Link>.
+                </p>
             </form>
           </CardContent>
         </Card>
