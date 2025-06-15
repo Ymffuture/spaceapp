@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin
+Disallow: /dashboard
+Allow: /
+
+Sitemap: https://qspaceblog.vercel.app/sitemap.xml
+
