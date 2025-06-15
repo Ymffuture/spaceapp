@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { toast } from 'sonner'
 import { setBlog } from '@/redux/blogSlice'
-
+import {Helmet} from 'react-helmet' ;
 const UpdateBlog = () => {
     const editor = useRef(null);
    
@@ -141,6 +141,13 @@ const UpdateBlog = () => {
     }
 
     return (
+        <>
+        <Helmet>
+        <title>Updating Blog | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+        
+        
         <div className='pb-10 px-3 pt-20 md:ml-[320px]'>
             <div className='max-w-6xl mx-auto mt-8'>
                 <Card className="w-full bg-gradient-to-br from-white via-slate-100 to-blue-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 p-8 space-y-6 rounded-2xl shadow-xl border border-blue-200 dark:border-gray-700 relative">
@@ -218,6 +225,7 @@ const UpdateBlog = () => {
                 </Card>
             </div>
         </div>
+        </>
     )
 }
 
