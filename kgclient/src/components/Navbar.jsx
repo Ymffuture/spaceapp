@@ -55,8 +55,7 @@ const Navbar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     // const user = false;
-const ProfileMenu = ({ user, logoutHandler }) => {
-  const navigate = useNavigate()
+
   const [hovered, setHovered] = useState(false)
     const logoutHandler = async (e) => {
 
