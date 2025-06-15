@@ -12,6 +12,7 @@ import userLogo from "../assets/user.jpg"
 import { HiMenuAlt1, HiMenuAlt3 } from "react-icons/hi";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import { motion, AnimatePresence } from 'framer-motion'
 import {
     ChartColumnBig,
     Cloud,
