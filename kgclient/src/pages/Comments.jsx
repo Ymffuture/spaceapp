@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Edit, Eye, Trash2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import {Helmet} from 'react-helmet' ;
 const Comments = () => {
     const [allComments, setAllComments] = useState([])
     const navigate = useNavigate()
@@ -25,6 +25,12 @@ const Comments = () => {
     console.log(allComments);
     
   return (
+      <>
+      <Helmet>
+        <title>Comments | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+      
     <div className='pb-10 pt-20 md:ml-[320px] h-screen bg-gradient-to-br from-[#F0F8FF] to-white'>
     <div className='max-w-6xl mx-auto mt-8 '>
         <Card className="w-full p-5 space-y-2 dark:bg-gray-800">
@@ -67,6 +73,7 @@ const Comments = () => {
         </Card>
     </div>
 </div>
+      </>
   )
 }
 
