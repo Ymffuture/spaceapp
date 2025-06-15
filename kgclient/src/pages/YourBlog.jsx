@@ -112,6 +112,13 @@ const YourBlog = () => {
     }
 
     return (
+
+        <>
+        <Helmet>
+        <title>My posts | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+        
         <div className='pb-10 pt-20 md:ml-[320px] h-screen'>
             <div className='max-w-6xl mx-auto mt-8 '>
                 <Card className="w-full p-5 space-y-2 dark:bg-gray-800">
@@ -164,6 +171,7 @@ const YourBlog = () => {
                 </Card>
             </div>
         </div>
+        </>
     )
 }
 
