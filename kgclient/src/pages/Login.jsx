@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/authSlice";
 import auth from "../assets/auth.jpg";
-
+import {Helmet} from 'react-helmet' ;
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -66,6 +66,13 @@ const Login = () => {
   };
 
   return (
+
+    <>
+    <Helmet>
+        <title>Log in | Qspace</title>
+        <meta name="description" content="Read our latest tech, coding, and career articles." />
+      </Helmet>
+    
     <div className="flex flex-col md:flex-row items-center justify-center min-h-screen p-4 bg-[#F0F8FF] dark:bg-gray-950">
       {/* Left Image */}
       <div className="hidden md:block w-1/2">
@@ -134,6 +141,7 @@ const Login = () => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
 
