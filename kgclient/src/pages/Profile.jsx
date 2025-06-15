@@ -121,12 +121,6 @@ const Profile = () => {
           {/* Info + Bio + Edit */}
           <div className="flex-1 space-y-6">
             <div className="flex justify-between items-start">
-              <div>
-                
-                <p className="text-[whitesmoke] dark:text-gray-400 mt-1 bg-[#6bfb6b] rounded-full p-2">
-                  <span className="font-semibold">Email:</span> {user?.email}
-                </p>
-              </div>
               <Button variant="outline" onClick={() => setOpen(true)}>
                 Edit Profile
               </Button>
