@@ -96,7 +96,7 @@ const Navbar = () => {
                     }
                     <Link to={'/'}>
                         <div className='flex gap-2 items-center'>
-                             <img src={Logo} alt="Qspace" className='w-12 h-12 md:w-10 md:h-10 dark:invert' /> 
+                             <img src={Logo} alt="Qspace" className='w-[60px] h-[70px] md:w-10 md:h-10 dark:invert' /> 
                             {/*    <h1 className='font-bold text-3xl md:text-4xl'>Qspace</h1>*/}
                         </div>
                     </Link>
@@ -153,8 +153,7 @@ const Navbar = () => {
                         </Button>
                         {
                             user ? <div className="ml-7 flex gap-3 items-center"
-                             data-tooltip-id="4"
-              data-tooltip-content="Profile"
+                    
                             >
                                 {/* <Link to={'/profile'}> */}
                                 <DropdownMenu>
@@ -295,7 +294,7 @@ const Navbar = () => {
              <Tooltip id="1" />
              <Tooltip id="2" />
              <Tooltip id="3" />
-             <Tooltip id="4" />
+     
              <Tooltip id="5" />
         </div>
     )
