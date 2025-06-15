@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-
+import {Helmet} from 'react-helmet';
 // const invoices = [
 //     {
 //         invoice: "INV001",
