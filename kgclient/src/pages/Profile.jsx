@@ -96,27 +96,53 @@ const Profile = () => {
         <Card className="backdrop-blur-md bg-white/80 dark:bg-[#1f2937]/80 border shadow-lg rounded-3xl p-6 md:p-10 flex flex-col md:flex-row gap-10">
           {/* Profile Image + Links */}
           <div className="flex flex-col items-center md:w-[380px] gap-4">
-            <Avatar className="w-44 h-44 ring-4 ring-blue-400 dark:ring-green-500 shadow-lg">
-              <AvatarImage src={user?.photoUrl || userLogo} />
-            </Avatar>
+            <Avatar className="w-44 h-44 ring-4 ring-blue-400 dark:ring-green-500 shadow-lg relative">
+  <AvatarImage src={user?.photoUrl || userLogo} />
+  <span className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full animate-pulse"></span>
+</Avatar>
+
             <h1 className="text-center font-semibold text-xl text-gray-700 dark:text-gray-100">
               {user?.occupation || user?.firstName }
             </h1>
-            <div className="flex gap-5 mt-2 text-xl">
-              <Link to={user?.facebook || '#'} target="_blank">
-                <FaFacebook className="hover:text-blue-600 transition" />
-              </Link>
-              <Link to={user?.linkedin || '#'} target="_blank">
-                <FaLinkedin className="hover:text-blue-500 transition" />
-              </Link>
-              <Link to={user?.github || '#'} target="_blank">
-                <FaGithub className="hover:text-black dark:hover:text-gray-200 transition" />
-              </Link>
-              <Link to={user?.instagram || '#'} target="_blank">
-                <FaInstagram className="hover:text-pink-500 transition" />
-              </Link>
-            </div>
-          </div>
+            <div className="flex gap-5 mt-2 text-2xl">
+  <Link to={user?.facebook || '#'} target="_blank">
+    <FaFacebook
+      className={
+        user?.facebook
+          ? 'text-blue-600 hover:text-blue-800 transition'
+          : 'text-gray-400 cursor-not-allowed'
+      }
+    />
+  </Link>
+  <Link to={user?.linkedin || '#'} target="_blank">
+    <FaLinkedin
+      className={
+        user?.linkedin
+          ? 'text-blue-500 hover:text-blue-700 transition'
+          : 'text-gray-400 cursor-not-allowed'
+      }
+    />
+  </Link>
+  <Link to={user?.github || '#'} target="_blank">
+    <FaGithub
+      className={
+        user?.github
+          ? 'text-black dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition'
+          : 'text-gray-400 cursor-not-allowed'
+      }
+    />
+  </Link>
+  <Link to={user?.instagram || '#'} target="_blank">
+    <FaInstagram
+      className={
+        user?.instagram
+          ? 'text-pink-500 hover:text-pink-600 transition'
+          : 'text-gray-400 cursor-not-allowed'
+      }
+    />
+  </Link>
+</div>
+
 
           {/* Info + Bio + Edit */}
           <div className="flex-1 space-y-6">
