@@ -66,14 +66,7 @@ const BlogView = () => {
         return formattedDate
     }
 
-    // const handleShare = (blogId) => {
-    //     const blogUrl = `${window.location.origin}/blogs/${blogId}`;
-    //     navigator.clipboard.writeText(blogUrl).then(() => {
-    //         toast.success('Blog link copied to clipboard!');
-    //     }).catch((err) => {
-    //         console.error('Failed to copy:', err);
-    //     });
-    // };
+ 
     const handleShare = (blogId) => {
         const blogUrl = `${window.location.origin}/blogs/${blogId}`;
       
