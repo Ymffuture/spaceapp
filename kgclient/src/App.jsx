@@ -19,7 +19,8 @@ const YourBlog = lazy(() => import('./pages/YourBlog'))
 const Comments = lazy(() => import('./pages/Comments'))
 const Signup = lazy(() => import('./pages/Signup'))
 const Login = lazy(() => import('./pages/Login'))
-
+const Terms = lazy(()=>import('./pages/Terms' ))
+const PrivatePolicy = lazy(()=>import('./pages/PrivatePolicy')) 
 // Main router
 const router = createBrowserRouter([
   {
@@ -34,9 +35,17 @@ const router = createBrowserRouter([
     path: "/about",
     element: <><Navbar /><About /><Footer /></>
   },
+    {
+    path: "/terms",
+    element: <><Navbar /><Terms /></>
+  },
+    {
+    path: "/privacy",
+    element: <><Navbar /><PrivacyPolicy /></>
+  },
   {
     path: "/search",
-    element: <><Navbar /><SearchList /><Footer /></>
+    element: <><Navbar /><SearchList /><Footer/></>
   },
   {
     path: "/blogs/:blogId",
