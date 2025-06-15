@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Logo from '../assets/logo.png'
+import Logo from '../assets/Qspace.svg'
 import { FaFacebookF, FaInstagram, FaPinterestP, FaTwitter,FaLink } from 'react-icons/fa'
 
 const Footer = () => {
@@ -11,8 +11,8 @@ const Footer = () => {
         {/* Brand Info */}
         <div>
           <Link to="/" className="flex items-center gap-3">
-            {/* <img src={Logo} alt="Quorvex Logo" className="w-12 h-12 object-contain rounded-full border border-gray-500 p-1" /> */}
-            <h1 className="text-2xl font-bold ">Qspace</h1>
+             <img src={Logo} alt="Quorvex Logo" className="w-12 h-12 object-contain rounded-full border border-gray-500 p-1" /> 
+            
           </Link>
           <p className="mt-3 text-sm">
             Empowering future minds through coding, AI, and innovation.
