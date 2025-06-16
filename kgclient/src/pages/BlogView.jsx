@@ -31,7 +31,7 @@ const BlogView = () => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(selectedBlog?.likes.length || 0);
-  const [dislikeCount, setDislikeCount] = useState(0); // You can fetch real value from backend if available
+  const [dislikeCount, setDislikeCount] = useState(selectedBlog?.dislikes?.length || 0);
   const [loading, setLoading] = useState(true);
   const [markedRead, setMarkedRead] = useState(false);
 
