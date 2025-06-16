@@ -17,7 +17,6 @@ const Login = () => {
   
   const handleGoogleSuccess = async (credentialResponse) => {
   const decoded = jwt_decode(credentialResponse.credential);
-
     // Send to backend to check/create account
     try {
       const res = await axios.post('/api/auth/google-login', {
@@ -28,7 +27,7 @@ const Login = () => {
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Google Login Failed');
     }
-    
+   } 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState({
