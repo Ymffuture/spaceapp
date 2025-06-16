@@ -54,7 +54,8 @@ const router = createBrowserRouter([
   },
   {
     path: "/blogs/:blogId",
-    element: <><Navbar /><ProtectedRoute><BlogView /></ProtectedRoute></>
+    element: <><Navbar /><ProtectedRoute><BlogView /></ProtectedRoute></>, 
+errorElement={<NotFound/>} 
   },
   {
     path: "/write-blog",
