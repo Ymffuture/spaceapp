@@ -12,7 +12,7 @@ import { setUser } from "@/redux/authSlice";
 import auth from "../assets/auth.jpg";
 import {Helmet} from 'react-helmet' ;
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import jwt_decode from 'jwt-decode';
+import {jwt_decode} from 'jwt-decode';
 
 const Login = () => {
   
