@@ -19,23 +19,22 @@ import { setBlog } from '@/redux/blogSlice';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
 import { Skeleton } from '@/components/ui/skeleton';
+import io from 'socket.io-client';
+
+const socket = io('https://kgserver-bjy2.onrender.com');
 
 const BlogView = () => {
   const { blogId } = useParams();
   const { blog } = useSelector((store) => store.blog);
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
-  
-//bconst { blog } = useSelector((store) => store.blog);
-const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : null;
 
-  // const selectedBlog = blog.find((b) => b._id === blogId);
+  const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : null;
 
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(selectedBlog?.likes.length || 0);
   const [dislikeCount, setDislikeCount] = useState(selectedBlog?.dislikes?.length || 0);
-  const [commentCount, setCommentCount] = useState(selectedBlog.comments?.length || 0);
   const [loading, setLoading] = useState(true);
   const [markedRead, setMarkedRead] = useState(false);
 
@@ -43,9 +42,20 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
     if (selectedBlog) {
       setLiked(selectedBlog.likes.includes(user?._id));
     }
-
     setTimeout(() => setLoading(false), 800);
   }, [selectedBlog, user]);
+
+  useEffect(() => {
+    socket.on('reactionUpdate', ({ blogId: updatedId, likes, dislikes }) => {
+      if (updatedId === selectedBlog?._id) {
+        setLikeCount(likes.length);
+        setDislikeCount(dislikes.length);
+      }
+    });
+    return () => {
+      socket.off('reactionUpdate');
+    };
+  }, [selectedBlog]);
 
   const toggleReaction = async (action, enable = true) => {
     try {
@@ -53,7 +63,6 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
         `https://kgserver-bjy2.onrender.com/api/v1/blog/${selectedBlog?._id}/${action}`,
         { withCredentials: true }
       );
-
       if (res.data.success) {
         toast.success(res.data.message);
         const updatedBlog = blog.map((b) =>
@@ -68,6 +77,7 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
             : b
         );
         dispatch(setBlog(updatedBlog));
+        socket.emit('updateReaction', selectedBlog._id);
       }
     } catch (err) {
       console.error(err);
@@ -131,7 +141,7 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
       <div className="pt-16 bg-background text-foreground">
         <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-0">
           {loading || !selectedBlog ? (
-                  <>
+            <>
               <Skeleton className="h-6 w-40 mb-3" />
               <Skeleton className="h-10 w-full mb-2 rounded-lg" />
               <Skeleton className="h-5 w-1/2 mb-6" />
@@ -159,7 +169,6 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
             </>
           ) : (
             <>
-              {/* Breadcrumb */}
               <Breadcrumb className="text-sm text-muted-foreground mb-6">
                 <BreadcrumbList>
                   <BreadcrumbItem>
@@ -183,7 +192,6 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
               <h1 className="text-3xl sm:text-5xl font-bold mb-3 leading-tight">{selectedBlog.title}</h1>
               <p className="text-muted-foreground italic text-lg">{selectedBlog.subtitle}</p>
 
-              {/* Author Info */}
               <div className="flex items-center justify-between mt-6 flex-wrap gap-4">
                 <div className="flex items-center gap-4">
                   <Avatar className="w-11 h-11">
@@ -200,17 +208,14 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
                 </span>
               </div>
 
-              {/* Thumbnail */}
               <div className="rounded-xl overflow-hidden shadow-sm mb-6 mt-6">
                 <img src={selectedBlog.thumbnail} alt={selectedBlog.title} className="w-full object-cover" />
               </div>
 
-              {/* Description */}
               <div className="prose dark:prose-invert prose-lg max-w-none">
                 <div dangerouslySetInnerHTML={{ __html: selectedBlog.description }} />
               </div>
 
-              {/* Tags */}
               <div className="flex flex-wrap gap-2 mt-8">
                 {['Next.js', 'React', 'Web Dev', 'JavaScript'].map((tag, i) => (
                   <Badge key={i} variant="secondary" className="rounded-full px-3 py-1 text-xs">
@@ -219,7 +224,6 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
                 ))}
               </div>
 
-              {/* Reactions */}
               <div className="sticky bottom-0 bg-background/90 backdrop-blur-md mt-10 py-4 border-t flex justify-between items-center">
                 <div className="flex gap-3 items-center">
                   <Button onClick={handleLike} variant="ghost" size="icon">
@@ -235,7 +239,7 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
                   <Button variant="ghost" size="icon">
                     <MessageSquare className="text-muted-foreground" size={20} />
                   </Button>
-                  <span className="text-sm">{commentCount}</span>
+                  <span className="text-sm">{selectedBlog.comments?.length || 0}</span>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -251,7 +255,6 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
                 </div>
               </div>
 
-              {/* Comments */}
               <div className="mt-10">
                 <CommentBox selectedBlog={selectedBlog} />
               </div>
