@@ -106,7 +106,7 @@ const Login = () => {
             </p>
           </CardHeader>
           <CardContent>
-            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+            <GoogleOAuthProvider clientId="755156469559-fk5bfd44pborgg9ad4omcuj786d27h8b.apps.googleusercontent.com" >
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <Label>Email</Label>
