@@ -12,7 +12,7 @@ import { setUser } from "@/redux/authSlice";
 import auth from "../assets/auth.jpg";
 import { Helmet } from "react-helmet";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import jwtDecode from "jwt-decode"; // ✅ FIXED import
+import {jwt_decode} from 'jwt-decode'; // ✅ FIXED import
 
 const Login = () => {
   const navigate = useNavigate();
