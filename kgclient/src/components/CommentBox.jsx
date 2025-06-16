@@ -5,13 +5,13 @@ import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar'
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 import { LuSend } from "react-icons/lu"
-import { FaHeart, FaRegHeart } from "react-icons/fa6"
+import { FaThumbsUp } from "react-icons/fa6"
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import { setComment } from '@/redux/commentSlice'
 import CommentSkeleton from './CommentSkeleton'
 
-const socket = io("https://kgserver-bjy2.onrender.com") // your backend URL
+const socket = io("https://kgserver-bjy2.onrender.com")
 
 const CommentBox = ({ selectedBlog }) => {
   const { user } = useSelector(state => state.auth)
@@ -19,7 +19,7 @@ const CommentBox = ({ selectedBlog }) => {
   const dispatch = useDispatch()
 
   const [content, setContent] = useState("")
-  const [replyMap, setReplyMap] = useState({}) // { parentId: [replies] }
+  const [replyMap, setReplyMap] = useState({})
   const [replyText, setReplyText] = useState('')
   const [replyingTo, setReplyingTo] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -31,7 +31,6 @@ const CommentBox = ({ selectedBlog }) => {
         dispatch(setComment(prev => [...prev, newComment]))
       }
     })
-
     return () => socket.disconnect()
   }, [])
 
@@ -52,7 +51,6 @@ const CommentBox = ({ selectedBlog }) => {
         })
         setReplyMap(map)
       } catch (error) {
-        console.error(error)
         toast.error("Failed to load comments")
       } finally {
         setLoading(false)
@@ -68,14 +66,14 @@ const CommentBox = ({ selectedBlog }) => {
         content: text,
         parentId
       }, { withCredentials: true })
+
       if (res.data.success) {
         toast.success("Comment posted")
         setContent("")
         setReplyText("")
         setReplyingTo(null)
       }
-    } catch (err) {
-      console.error(err)
+    } catch {
       toast.error("Comment failed")
     }
   }
@@ -86,50 +84,66 @@ const CommentBox = ({ selectedBlog }) => {
         withCredentials: true
       })
       if (res.data.success) {
-        const updated = res.data.updatedComment
-        dispatch(setComment(comment.map(c => c._id === id ? updated : c)))
+        dispatch(setComment(comment.map(c => c._id === id ? res.data.updatedComment : c)))
       }
-    } catch (e) {
+    } catch {
       toast.error("Like failed")
     }
   }
 
-  const topLevelComments = comment.filter(c => !c.parentId)
+  const getTimeAgo = (date) => {
+    const now = new Date()
+    const past = new Date(date)
+    const diff = Math.floor((now - past) / 1000)
+
+    if (diff < 60) return `${diff}s ago`
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`
+    return past.toLocaleDateString()
+  }
 
   const toggleReplies = (commentId) => {
     setShowReplies(prev => ({ ...prev, [commentId]: !prev[commentId] }))
   }
 
+  const topLevelComments = comment.filter(c => !c.parentId)
+
   return (
     <div className="space-y-4">
+      {/* Write New Comment */}
       <div className="flex items-start gap-3">
-        <Avatar><AvatarImage src={user.photoUrl} /><AvatarFallback>U</AvatarFallback></Avatar>
+        <Avatar><AvatarImage src={user?.photoUrl} /><AvatarFallback>U</AvatarFallback></Avatar>
         <Textarea
           value={content}
           onChange={e => setContent(e.target.value)}
           placeholder="Write a comment..."
-          className="bg-gray-100 dark:bg-gray-800"
+          className="bg-muted resize-none"
         />
-        <Button onClick={() => sendComment()}><LuSend /></Button>
+        <Button onClick={() => sendComment()} className="h-10"><LuSend /></Button>
       </div>
 
+      {/* Comment List */}
       {loading ? <CommentSkeleton /> : (
         <div className="space-y-6 mt-4">
           {topLevelComments.map(c => (
-            <div key={c._id} className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+            <div key={c._id} className="bg-muted/30 p-4 rounded-xl">
               <div className="flex items-start gap-3">
                 <Avatar><AvatarImage src={c.userId?.photoUrl} /><AvatarFallback>U</AvatarFallback></Avatar>
                 <div className="flex-1">
                   <div className="text-sm font-semibold">{c.userId?.firstName} {c.userId?.lastName}</div>
-                  <p>{c.content}</p>
-                  <div className="flex gap-4 items-center mt-1 text-sm">
-                    <button onClick={() => handleLike(c._id)}>
-                      {c.likes.includes(user._id) ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
-                      {c.numberOfLikes}
+                  <p className="text-sm mt-0.5">{c.content}</p>
+
+                  {/* Action bar */}
+                  <div className="flex gap-4 items-center mt-1 text-xs text-muted-foreground">
+                    <button onClick={() => handleLike(c._id)} className="flex items-center gap-1 hover:text-primary">
+                      <FaThumbsUp className={c.likes.includes(user._id) ? "text-blue-600" : ""} size={14} />
+                      <span>{c.numberOfLikes || 0}</span>
                     </button>
-                    <button onClick={() => setReplyingTo(c._id)}>Reply</button>
+                    <button onClick={() => setReplyingTo(c._id)} className="hover:underline">Reply</button>
+                    <span>{getTimeAgo(c.createdAt)}</span>
                     {replyMap[c._id]?.length > 0 && (
-                      <button onClick={() => toggleReplies(c._id)}>
+                      <button onClick={() => toggleReplies(c._id)} className="hover:underline">
                         {showReplies[c._id] ? 'Hide Replies' : `View ${replyMap[c._id].length} Replies`}
                       </button>
                     )}
@@ -137,25 +151,26 @@ const CommentBox = ({ selectedBlog }) => {
 
                   {/* Reply Box */}
                   {replyingTo === c._id && (
-                    <div className="mt-2 flex gap-2">
+                    <div className="mt-2 flex items-start gap-2">
                       <Textarea
                         value={replyText}
                         onChange={e => setReplyText(e.target.value)}
-                        className="bg-gray-200 dark:bg-gray-700"
+                        className="bg-muted resize-none"
                         placeholder="Write a reply..."
                       />
-                      <Button onClick={() => sendComment(c._id)}><LuSend /></Button>
+                      <Button onClick={() => sendComment(c._id)} className="h-10"><LuSend /></Button>
                     </div>
                   )}
 
-                  {/* Replies */}
+                  {/* Nested Replies */}
                   {showReplies[c._id] && replyMap[c._id]?.map(r => (
-                    <div key={r._id} className="mt-3 ml-6 bg-white dark:bg-gray-900 p-2 rounded">
+                    <div key={r._id} className="mt-4 ml-6 border-l-2 border-gray-300 pl-4">
                       <div className="flex items-start gap-2">
                         <Avatar className="w-6 h-6"><AvatarImage src={r.userId?.photoUrl} /><AvatarFallback>U</AvatarFallback></Avatar>
                         <div>
                           <div className="text-xs font-semibold">{r.userId?.firstName} {r.userId?.lastName}</div>
                           <p className="text-sm">{r.content}</p>
+                          <div className="text-xs text-muted-foreground mt-1">{getTimeAgo(r.createdAt)}</div>
                         </div>
                       </div>
                     </div>
