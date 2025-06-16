@@ -50,7 +50,8 @@ const router = createBrowserRouter([
   
   {
     path: "/search",
-    element: <><Navbar /><SearchList /><Footer/></>
+    element: <><Navbar /><SearchList /><Footer/></>, 
+    errorElement={<NotFound/>} 
   },
   {
     path: "/blogs/:blogId",
