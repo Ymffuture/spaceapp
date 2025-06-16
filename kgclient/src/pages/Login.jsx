@@ -11,7 +11,24 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/authSlice";
 import auth from "../assets/auth.jpg";
 import {Helmet} from 'react-helmet' ;
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import jwt_decode from 'jwt-decode';
 const Login = () => {
+  
+  const handleGoogleSuccess = async (credentialResponse) => {
+  const decoded = jwt_decode(credentialResponse.credential);
+
+    // Send to backend to check/create account
+    try {
+      const res = await axios.post('/api/auth/google-login', {
+        token: credentialResponse.credential,
+      });
+      toast.success('Google login success');
+      // Save token, redirect, etc.
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Google Login Failed');
+    }
+    
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState({
@@ -89,6 +106,7 @@ const Login = () => {
             </p>
           </CardHeader>
           <CardContent>
+            <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <Label>Email</Label>
@@ -143,7 +161,15 @@ const Login = () => {
                   and{" "}
                   <Link to="/privacy" className="underline hover:text-[#1E90FF]">Privacy Policy</Link>.
                 </p>
+              <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() => toast.error("Login Failed")}
+          shape="pill"
+          theme="outline"
+          text="continue_with"
+        />
             </form>
+              </GoogleOAuthProvider>
           </CardContent>
         </Card>
       </div>
