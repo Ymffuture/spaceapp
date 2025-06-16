@@ -35,6 +35,7 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(selectedBlog?.likes.length || 0);
   const [dislikeCount, setDislikeCount] = useState(selectedBlog?.dislikes?.length || 0);
+  const [commentCount, setCommentCount] = useState(selectedBlog.comments?.length || 0);
   const [loading, setLoading] = useState(true);
   const [markedRead, setMarkedRead] = useState(false);
 
@@ -234,7 +235,7 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
                   <Button variant="ghost" size="icon">
                     <MessageSquare className="text-muted-foreground" size={20} />
                   </Button>
-                  <span className="text-sm">{selectedBlog.comments?.length || 0}</span>
+                  <span className="text-sm">{commentCount}</span>
                 </div>
                 <div className="flex gap-2">
                   <Button
