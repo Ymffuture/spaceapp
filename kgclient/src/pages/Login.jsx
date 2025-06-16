@@ -17,7 +17,7 @@ import {jwt_decode} from 'jwt-decode';
 const Login = () => {
   
   const handleGoogleSuccess = async (credentialResponse) => {
-  const decoded = jwt_decode(credentialResponse.credential);
+  const decoded = jwtDecode(credentialResponse.credential);
     // Send to backend to check/create account
     try {
       const res = await axios.post('/api/auth/google-login', {
