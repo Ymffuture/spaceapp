@@ -53,7 +53,7 @@ const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : 
         `https://kgserver-bjy2.onrender.com/api/v1/blog/${selectedBlog?._id}/${action}`,
         { withCredentials: true }
       );
-
+setCommentCount(selectedBlog?.comments)
       if (res.data.success) {
         toast.success(res.data.message);
         const updatedBlog = blog.map((b) =>
