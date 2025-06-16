@@ -24,7 +24,7 @@ const Login = () => {
 
   // ✅ GitHub Login
   const handleGitHubLogin = () => {
-    window.location.href = "https://kgserver-bjy2.onrender.com/api/auth/github";
+    window.location.href = "https://kgserver-bjy2.onrender.com/api/v1/user/auth/github";
   };
 
   // ✅ Google Login Success
@@ -32,7 +32,7 @@ const Login = () => {
     try {
       const decoded = jwtDecode(credentialResponse.credential);
       const res = await axios.post(
-        "https://kgserver-bjy2.onrender.com/api/auth/google-login",
+        "https://kgserver-bjy2.onrender.com/api/v1/user/auth/google-login",
         {
           token: credentialResponse.credential,
         }
