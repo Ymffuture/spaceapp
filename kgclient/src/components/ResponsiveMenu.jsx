@@ -15,7 +15,7 @@ const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
     <div
       className={`
         ${openNav ? "left-0" : "-left-full"}
-        fixed top-0 bottom-0 z-50 h-[90%] w-[80%] sm:w-[50%] lg:w-[20%]
+        fixed top-0 bottom-0 z-50 h-[100%] w-[80%] sm:w-[50%] lg:w-[20%]
         flex flex-col justify-between px-6 pt-12 pb-6
         bg-gradient-to-br from-[#F0F8FF] via-white to-blue-50 dark:from-gray-900 dark:to-gray-800
         text-black dark:text-white shadow-2xl
@@ -36,15 +36,13 @@ const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
 
           <div className='relative'>
             <h1 className="text-lg font-bold">Hello, {user?.firstName || "Guest"}</h1>
-            <p className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-300 bg-[#bb9f0076] p-1 rounded-full top-[-30px] right-[120px] rotate-[-25deg] absolute zoom-[20%]">
-              <FaCrown className="text-yellow-500" /> Premium
-            </p>
+            
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="mt-10">
-          <ul className="flex flex-col gap-5 text-lg font-semibold tracking-wide">
+          <ul className="flex flex-col gap-5 text-[14px] tracking-wide">
             <Link to="/" onClick={() => setOpenNav(false)}>
               <li className="flex items-center gap-2 hover:text-[#1E90FF] transition-all duration-200">
                 <FaHome /> Home
