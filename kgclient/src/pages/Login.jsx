@@ -16,6 +16,9 @@ import {jwt_decode} from 'jwt-decode';
 
 const Login = () => {
   
+  const handleGitHubLogin = () => {
+    window.location.href = "https://kgserver-bjy2.onrender.com/api/auth/github";
+  };
   const handleGoogleSuccess = async (credentialResponse) => {
   const decoded = jwtDecode(credentialResponse.credential);
     // Send to backend to check/create account
@@ -168,6 +171,11 @@ const Login = () => {
           theme="outline"
           text="continue_with"
         />
+              <div>
+      <Button onClick={handleGitHubLogin}>
+        Continue with GitHub
+      </Button>
+    </div>
             </form>
               </GoogleOAuthProvider>
           </CardContent>
