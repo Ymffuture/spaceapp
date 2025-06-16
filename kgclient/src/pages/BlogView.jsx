@@ -27,11 +27,12 @@ const BlogView = () => {
   const { user } = useSelector((store) => store.auth);
   const selectedBlog = blog.find((b) => b._id === blogId);
 
-  const [blogLike, setBlogLike] = useState(selectedBlog?.likes.length);
+  const [blogLike, setBlogLike] = useState(selectedBlog?.likes.length || 0);
   const [liked, setLiked] = useState(selectedBlog?.likes.includes(user?._id) || false);
-  const dispatch = useDispatch();
+  const [disliked, setDisliked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [markedRead, setMarkedRead] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -39,30 +40,58 @@ const BlogView = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  const likeOrDislikeHandler = async () => {
+  const likeHandler = async () => {
+    if (liked) {
+      await toggleReaction('dislike', false);
+      setLiked(false);
+      setBlogLike(blogLike - 1);
+    } else {
+      if (disliked) setDisliked(false);
+      await toggleReaction('like', true);
+      setLiked(true);
+      setBlogLike(disliked ? blogLike + 2 : blogLike + 1);
+    }
+  };
+
+  const dislikeHandler = async () => {
+    if (disliked) {
+      setDisliked(false);
+      toast('Dislike removed');
+    } else {
+      if (liked) {
+        await toggleReaction('dislike', false);
+        setLiked(false);
+        setBlogLike(blogLike - 1);
+      }
+      setDisliked(true);
+      toast('You disliked this');
+    }
+  };
+
+  const toggleReaction = async (action, applyToast = true) => {
     try {
-      const action = liked ? 'dislike' : 'like';
       const res = await axios.get(`https://kgserver-bjy2.onrender.com/api/v1/blog/${selectedBlog?._id}/${action}`, {
         withCredentials: true,
       });
-      if (res.data.success) {
-        const updatedLikes = liked ? blogLike - 1 : blogLike + 1;
-        setBlogLike(updatedLikes);
-        setLiked(!liked);
+
+      if (res.data.success && applyToast) {
+        toast.success(res.data.message);
         const updatedBlogData = blog.map((p) =>
           p._id === selectedBlog._id
             ? {
                 ...p,
-                likes: liked ? p.likes.filter((id) => id !== user._id) : [...p.likes, user._id],
+                likes:
+                  action === 'like'
+                    ? [...p.likes, user._id]
+                    : p.likes.filter((id) => id !== user._id),
               }
             : p
         );
-        toast.success(res.data.message);
         dispatch(setBlog(updatedBlogData));
       }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Error occurred');
     }
   };
 
@@ -178,12 +207,11 @@ const BlogView = () => {
               </div>
               <div className="sticky bottom-0 z-10 bg-background/80 backdrop-blur-md py-4 mt-10 border-t border-border flex justify-between items-center gap-4 flex-wrap">
                 <div className="flex gap-4 items-center">
-                  <Button onClick={likeOrDislikeHandler} variant="ghost" size="icon" className="hover:bg-primary/10">
-                    {liked ? (
-                      <ThumbsDown className="text-red-600" size={20} />
-                    ) : (
-                      <ThumbsUp className="text-muted-foreground" size={20} />
-                    )}
+                  <Button onClick={likeHandler} variant="ghost" size="icon" className="hover:bg-blue-100 dark:hover:bg-blue-900">
+                    <ThumbsUp className={liked ? 'text-blue-600' : 'text-muted-foreground'} size={20} />
+                  </Button>
+                  <Button onClick={dislikeHandler} variant="ghost" size="icon" className="hover:bg-red-100 dark:hover:bg-red-900">
+                    <ThumbsDown className={disliked ? 'text-red-600' : 'text-muted-foreground'} size={20} />
                   </Button>
                   <span className="text-sm">{blogLike}</span>
                   <Button variant="ghost" size="icon">
