@@ -12,7 +12,7 @@ import { setUser } from "@/redux/authSlice";
 import auth from "../assets/auth.jpg";
 import { Helmet } from "react-helmet";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import {jwt_decode} from 'jwt-decode'; // ✅ FIXED import
+// import {jwtDecode} from 'jwt-decode'; 
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const Login = () => {
   // ✅ Google Login Success
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const decoded = jwtDecode(credentialResponse.credential);
+     // const decoded = jwtDecode(credentialResponse.credential);
       const res = await axios.post(
         "https://kgserver-bjy2.onrender.com/api/v1/user/auth/google-login",
         {
