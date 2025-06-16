@@ -25,8 +25,11 @@ const BlogView = () => {
   const { blog } = useSelector((store) => store.blog);
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
+  
+const { blog } = useSelector((store) => store.blog);
+const selectedBlog = Array.isArray(blog) ? blog.find((b) => b._id === blogId) : null;
 
-  const selectedBlog = blog.find((b) => b._id === blogId);
+  // const selectedBlog = blog.find((b) => b._id === blogId);
 
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
