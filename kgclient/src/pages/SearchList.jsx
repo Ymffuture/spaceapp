@@ -5,7 +5,7 @@ import BlogCard from '@/components/BlogCard';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
 import Lottie from 'lottie-react';
-import NotFoundAnim from '@/assets/SearchAnimation.json'; // Your animation file
+import NotFoundAnim from '@/assets/searchAnimation.json'; // Your animation file
 
 const SearchList = () => {
   const location = useLocation();
