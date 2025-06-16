@@ -51,12 +51,12 @@ const router = createBrowserRouter([
   {
     path: "/search",
     element: <><Navbar /><SearchList /><Footer/></>, 
-    errorElement={<NotFound/>} 
+    errorElement:<NotFound/>
   },
   {
     path: "/blogs/:blogId",
     element: <><Navbar /><ProtectedRoute><BlogView /></ProtectedRoute></>, 
-errorElement={<NotFound/>} 
+errorElement:<NotFound/>
   },
   {
     path: "/write-blog",
