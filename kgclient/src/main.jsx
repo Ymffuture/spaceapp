@@ -8,6 +8,7 @@ import store from './redux/Store'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import ThemeProvider from './components/ThemeProvider'
+import GlobalErrorBoundary from './ErrorBoundary.jsx'
 
 const persistor = persistStore(store)
 
@@ -16,7 +17,10 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor} >
         <ThemeProvider>
-        <App />
+          <GlobalErrorBoundary>
+          <App />
+          </GlobalErrorBoundary>
+        
         </ThemeProvider>
       </PersistGate>
     </Provider>
