@@ -63,10 +63,6 @@ const BlogView = () => {
         `https://kgserver-bjy2.onrender.com/api/v1/blog/${selectedBlog?._id}/${action}`,
         { withCredentials: true }
       );
-<<<<<<< HEAD
-setCommentCount(selectedBlog?.comments)
-=======
->>>>>>> 1aeeb9d394a25197c8f06ab78fd6350757c79a1d
       if (res.data.success) {
         toast.success(res.data.message);
         const updatedBlog = blog.map((b) =>
