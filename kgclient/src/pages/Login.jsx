@@ -22,11 +22,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // ✅ GitHub Login
-  const handleGitHubLogin = () => {
-    window.location.href = "https://kgserver-bjy2.onrender.com/api/v1/user/auth/github";
-  };
-
   // ✅ Google Login Success
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -203,14 +198,7 @@ const Login = () => {
                     text="continue_with"
                   />
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleGitHubLogin}
-                  >
-                    Continue with GitHub
-                  </Button>
+              
                 </div>
               </CardContent>
             </Card>

@@ -33,17 +33,31 @@ const BlogView = () => {
 
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
-  const [likeCount, setLikeCount] = useState(selectedBlog?.likes.length || 0);
+  const [likeCount, setLikeCount] = useState(selectedBlog?.likes?.length || 0);
   const [dislikeCount, setDislikeCount] = useState(selectedBlog?.dislikes?.length || 0);
   const [loading, setLoading] = useState(true);
   const [markedRead, setMarkedRead] = useState(false);
 
   useEffect(() => {
-    if (selectedBlog) {
-      setLiked(selectedBlog.likes.includes(user?._id));
+    if (selectedBlog && user) {
+      setLiked(selectedBlog.likes.includes(user._id));
+      setDisliked(selectedBlog.dislikes.includes(user._id));
     }
     setTimeout(() => setLoading(false), 800);
   }, [selectedBlog, user]);
+
+  useEffect(() => {
+    if (!selectedBlog && blogId) {
+      axios
+        .get(`https://kgserver-bjy2.onrender.com/api/v1/blog/${blogId}`)
+        .then((res) => {
+          if (res.data.success) {
+            dispatch(setBlog([res.data.blog]));
+          }
+        })
+        .catch(() => toast.error('Failed to load blog.'));
+    }
+  }, [selectedBlog, blogId, dispatch]);
 
   useEffect(() => {
     socket.on('reactionUpdate', ({ blogId: updatedId, likes, dislikes }) => {
@@ -52,74 +66,45 @@ const BlogView = () => {
         setDislikeCount(dislikes.length);
       }
     });
-    return () => {
-      socket.off('reactionUpdate');
-    };
+    return () => socket.off('reactionUpdate');
   }, [selectedBlog]);
 
-  const toggleReaction = async (action, enable = true) => {
+  const toggleReaction = async (action) => {
     try {
-      const res = await axios.get(
+      const res = await axios.post(
         `https://kgserver-bjy2.onrender.com/api/v1/blog/${selectedBlog?._id}/${action}`,
+        {},
         { withCredentials: true }
       );
+
       if (res.data.success) {
         toast.success(res.data.message);
-        const updatedBlog = blog.map((b) =>
-          b._id === selectedBlog._id
-            ? {
-                ...b,
-                likes:
-                  action === 'like'
-                    ? [...b.likes, user._id]
-                    : b.likes.filter((id) => id !== user._id),
-              }
-            : b
-        );
-        dispatch(setBlog(updatedBlog));
         socket.emit('updateReaction', selectedBlog._id);
+
+        const updated = res.data.blog;
+        const updatedBlog = blog.map((b) => (b._id === updated._id ? updated : b));
+        dispatch(setBlog(updatedBlog));
+
+        setLikeCount(updated.likes.length);
+        setDislikeCount(updated.dislikes.length);
+        setLiked(updated.likes.includes(user._id));
+        setDisliked(updated.dislikes.includes(user._id));
       }
     } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.message || 'Error updating reaction');
+      toast.error(err.response?.data?.message || 'Reaction failed');
     }
   };
 
-  const handleLike = async () => {
-    if (liked) {
-      await toggleReaction('dislike', false);
-      setLiked(false);
-      setLikeCount((prev) => prev - 1);
-    } else {
-      if (disliked) {
-        setDisliked(false);
-        setDislikeCount((prev) => prev - 1);
-      }
-      await toggleReaction('like', true);
-      setLiked(true);
-      setLikeCount((prev) => prev + 1);
-    }
-  };
-
-  const handleDislike = () => {
-    if (disliked) {
-      setDisliked(false);
-      setDislikeCount((prev) => prev - 1);
-    } else {
-      if (liked) {
-        setLiked(false);
-        setLikeCount((prev) => prev - 1);
-      }
-      setDisliked(true);
-      setDislikeCount((prev) => prev + 1);
-      toast('You disliked this post');
-    }
-  };
+  const handleLike = () => (liked ? toggleReaction('unlike') : toggleReaction('like'));
+  const handleDislike = () => (disliked ? toggleReaction('undislike') : toggleReaction('dislike'));
 
   const changeTimeFormat = (isoDate) => {
     const date = new Date(isoDate);
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    return date.toLocaleDateString('en-GB', options);
+    return date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
   };
 
   const handleShare = () => {
@@ -132,6 +117,37 @@ const BlogView = () => {
     }
   };
 
+  if (loading || !selectedBlog || !selectedBlog.author) {
+    return (
+      <div className="pt-16 max-w-4xl mx-auto px-6 sm:px-10 lg:px-0">
+        <Skeleton className="h-6 w-40 mb-3" />
+        <Skeleton className="h-10 w-full mb-2 rounded-lg" />
+        <Skeleton className="h-5 w-1/2 mb-6" />
+        <div className="flex items-center gap-4 mb-6">
+          <Skeleton className="h-11 w-11 rounded-full" />
+          <div>
+            <Skeleton className="h-4 w-40 mb-1" />
+            <Skeleton className="h-3 w-32" />
+          </div>
+        </div>
+        <Skeleton className="h-[240px] w-full mb-6 rounded-xl" />
+        <Skeleton className="h-5 w-full mb-2" />
+        <Skeleton className="h-5 w-5/6 mb-2" />
+        <Skeleton className="h-5 w-3/4 mb-6" />
+        <div className="flex gap-2 mb-4">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-6 w-20 rounded-full" />
+          ))}
+        </div>
+        <div className="flex items-center gap-4 mb-10">
+          <Skeleton className="h-5 w-10" />
+          <Skeleton className="h-5 w-10" />
+          <Skeleton className="h-5 w-10" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -140,126 +156,106 @@ const BlogView = () => {
 
       <div className="pt-16 bg-background text-foreground">
         <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-0">
-          {loading || !selectedBlog ? (
-            <>
-              <Skeleton className="h-6 w-40 mb-3" />
-              <Skeleton className="h-10 w-full mb-2 rounded-lg" />
-              <Skeleton className="h-5 w-1/2 mb-6" />
-              <div className="flex items-center gap-4 mb-6">
-                <Skeleton className="h-11 w-11 rounded-full" />
-                <div>
-                  <Skeleton className="h-4 w-40 mb-1" />
-                  <Skeleton className="h-3 w-32" />
-                </div>
-              </div>
-              <Skeleton className="h-[240px] w-full mb-6 rounded-xl" />
-              <Skeleton className="h-5 w-full mb-2" />
-              <Skeleton className="h-5 w-5/6 mb-2" />
-              <Skeleton className="h-5 w-3/4 mb-6" />
-              <div className="flex gap-2 mb-4">
-                {[1, 2, 3].map((i) => (
-                  <Skeleton key={i} className="h-6 w-20 rounded-full" />
-                ))}
-              </div>
-              <div className="flex items-center gap-4 mb-10">
-                <Skeleton className="h-5 w-10" />
-                <Skeleton className="h-5 w-10" />
-                <Skeleton className="h-5 w-10" />
-              </div>
-            </>
-          ) : (
-            <>
-              <Breadcrumb className="text-sm text-muted-foreground mb-6">
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <Link to="/">
-                      <BreadcrumbLink>Home</BreadcrumbLink>
-                    </Link>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <Link to="/blogs">
-                      <BreadcrumbLink>Blogs</BreadcrumbLink>
-                    </Link>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{selectedBlog.title}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+          <Breadcrumb className="text-sm text-muted-foreground mb-6">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <Link to="/">
+                  <BreadcrumbLink>Home</BreadcrumbLink>
+                </Link>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <Link to="/blogs">
+                  <BreadcrumbLink>Blogs</BreadcrumbLink>
+                </Link>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{selectedBlog.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
-              <h1 className="text-3xl sm:text-5xl font-bold mb-3 leading-tight">{selectedBlog.title}</h1>
-              <p className="text-muted-foreground italic text-lg">{selectedBlog.subtitle}</p>
+          <h1 className="text-3xl sm:text-5xl font-bold mb-3 leading-tight">
+            {selectedBlog.title}
+          </h1>
+          <p className="text-muted-foreground italic text-lg">
+            {selectedBlog.subtitle}
+          </p>
 
-              <div className="flex items-center justify-between mt-6 flex-wrap gap-4">
-                <div className="flex items-center gap-4">
-                  <Avatar className="w-11 h-11">
-                    <AvatarImage src={selectedBlog.author.photoUrl} />
-                    <AvatarFallback>{selectedBlog.author.firstName[0]}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h4 className="text-sm font-semibold">{selectedBlog.author.firstName} {selectedBlog.author.lastName}</h4>
-                    <span className="text-xs text-muted-foreground">{selectedBlog.author.occupation}</span>
-                  </div>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  📅 {changeTimeFormat(selectedBlog.createdAt)} · 8 min read
+          <div className="flex items-center justify-between mt-6 flex-wrap gap-4">
+            <div className="flex items-center gap-4">
+              <Avatar className="w-11 h-11">
+                <AvatarImage src={selectedBlog?.author?.photoUrl || '/default-avatar.png'} />
+                <AvatarFallback>
+                  {selectedBlog?.author?.firstName?.[0] || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h4 className="text-sm font-semibold">
+                  {selectedBlog?.author?.firstName || 'Unknown'}{' '}
+                  {selectedBlog?.author?.lastName || ''}
+                </h4>
+                <span className="text-xs text-muted-foreground">
+                  {selectedBlog?.author?.occupation || 'Contributor'}
                 </span>
               </div>
+            </div>
+            <span className="text-sm text-muted-foreground">
+              📅 {changeTimeFormat(selectedBlog.createdAt)} · 8 min read
+            </span>
+          </div>
 
-              <div className="rounded-xl overflow-hidden shadow-sm mb-6 mt-6">
-                <img src={selectedBlog.thumbnail} alt={selectedBlog.title} className="w-full object-cover" />
-              </div>
+          <div className="rounded-xl overflow-hidden shadow-sm mb-6 mt-6">
+            <img src={selectedBlog.thumbnail} alt={selectedBlog.title} className="w-full object-cover" />
+          </div>
 
-              <div className="prose dark:prose-invert prose-lg max-w-none">
-                <div dangerouslySetInnerHTML={{ __html: selectedBlog.description }} />
-              </div>
+          <div className="prose dark:prose-invert prose-lg max-w-none">
+            <div dangerouslySetInnerHTML={{ __html: selectedBlog.description }} />
+          </div>
 
-              <div className="flex flex-wrap gap-2 mt-8">
-                {['Next.js', 'React', 'Web Dev', 'JavaScript'].map((tag, i) => (
-                  <Badge key={i} variant="secondary" className="rounded-full px-3 py-1 text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
+          <div className="flex flex-wrap gap-2 mt-8">
+            {['Next.js', 'React', 'Web Dev', 'JavaScript'].map((tag, i) => (
+              <Badge key={i} variant="secondary" className="rounded-full px-3 py-1 text-xs">
+                {tag}
+              </Badge>
+            ))}
+          </div>
 
-              <div className="sticky bottom-0 bg-background/90 backdrop-blur-md mt-10 py-4 border-t flex justify-between items-center">
-                <div className="flex gap-3 items-center">
-                  <Button onClick={handleLike} variant="ghost" size="icon">
-                    <ThumbsUp className={liked ? 'text-blue-600' : 'text-muted-foreground'} size={20} />
-                  </Button>
-                  <span className="text-sm">{likeCount}</span>
+          <div className="sticky bottom-0 bg-background/90 backdrop-blur-md mt-10 py-4 border-t flex justify-between items-center">
+            <div className="flex gap-3 items-center">
+              <Button onClick={handleLike} variant="ghost" size="icon">
+                <ThumbsUp className={liked ? 'text-blue-600' : 'text-muted-foreground'} size={20} />
+              </Button>
+              <span className="text-sm">{likeCount}</span>
 
-                  <Button onClick={handleDislike} variant="ghost" size="icon">
-                    <ThumbsDown className={disliked ? 'text-red-600' : 'text-muted-foreground'} size={20} />
-                  </Button>
-                  <span className="text-sm">{dislikeCount}</span>
+              <Button onClick={handleDislike} variant="ghost" size="icon">
+                <ThumbsDown className={disliked ? 'text-red-600' : 'text-muted-foreground'} size={20} />
+              </Button>
+              <span className="text-sm">{dislikeCount}</span>
 
-                  <Button variant="ghost" size="icon">
-                    <MessageSquare className="text-muted-foreground" size={20} />
-                  </Button>
-                  <span className="text-sm">{selectedBlog.comments?.length || 0}</span>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant={markedRead ? 'default' : 'ghost'}
-                    size="icon"
-                    onClick={() => setMarkedRead((prev) => !prev)}
-                  >
-                    <Bookmark className={markedRead ? 'text-green-600' : 'text-muted-foreground'} size={20} />
-                  </Button>
-                  <Button onClick={handleShare} variant="ghost" size="icon">
-                    <Share2 className="text-muted-foreground" size={20} />
-                  </Button>
-                </div>
-              </div>
+              <Button variant="ghost" size="icon">
+                <MessageSquare className="text-muted-foreground" size={20} />
+              </Button>
+              <span className="text-sm">{selectedBlog.comments?.length || 0}</span>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant={markedRead ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setMarkedRead((prev) => !prev)}
+              >
+                <Bookmark className={markedRead ? 'text-green-600' : 'text-muted-foreground'} size={20} />
+              </Button>
+              <Button onClick={handleShare} variant="ghost" size="icon">
+                <Share2 className="text-muted-foreground" size={20} />
+              </Button>
+            </div>
+          </div>
 
-              <div className="mt-10">
-                <CommentBox selectedBlog={selectedBlog} />
-              </div>
-            </>
-          )}
+          <div className="mt-10">
+            <CommentBox selectedBlog={selectedBlog} />
+          </div>
         </div>
       </div>
     </>
