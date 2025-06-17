@@ -21,7 +21,7 @@ const commentSlice = createSlice({
     setCommentText: (state, action) => {
       state.commentText = action.payload;
     },
-    setComments: (state, action) => {
+    setComment: (state, action) => {
       state.comments = action.payload;
     },
     addComment: (state, action) => {
@@ -61,7 +61,7 @@ export const {
   setLoading,
   setError,
   setCommentText,
-  setComments,
+  setComment,
   addComment,
   updateComment,
   deleteComment,
