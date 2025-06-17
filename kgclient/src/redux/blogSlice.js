@@ -1,23 +1,48 @@
-import {createSlice} from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  blog: null,           // A single blog being viewed
+  yourBlogs: [],        // All blogs by the current user
+  allBlogs: [],         // (Optional) All blogs for listing
+  loading: false,
+  error: null,
+};
 
 const blogSlice = createSlice({
-    name:"blog",
-    initialState:{
-        blog:null,
-        yourBlog:null
+  name: "blog",
+  initialState,
+  reducers: {
+    setBlog: (state, action) => {
+      state.blog = action.payload;
     },
-    reducers:{
-        //actions
-        setBlog:(state, action) => {
-            state.blog = action.payload;
-            
-        },
-        setYourBlog:(state, action) => {
-            state.yourBlog = action.payload;
-        }
-
-    }
+    setYourBlogs: (state, action) => {
+      state.yourBlogs = action.payload;
+    },
+    setAllBlogs: (state, action) => {
+      state.allBlogs = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    clearBlog: (state) => {
+      state.blog = null;
+    },
+    clearAll: () => initialState,
+  },
 });
 
-export const {setBlog, setYourBlog} = blogSlice.actions;
+export const {
+  setBlog,
+  setYourBlogs,
+  setAllBlogs,
+  setLoading,
+  setError,
+  clearBlog,
+  clearAll,
+} = blogSlice.actions;
+
 export default blogSlice.reducer;
+
