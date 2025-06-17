@@ -5,7 +5,7 @@ import BlogCard from '@/components/BlogCard';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
 import Lottie from 'lottie-react';
-import NotFoundAnim from '@/assets/searchAnimation.json'; // Your animation file
+import NotFoundAnim from '@/assets/404-animation.json'; // Your animation file
 
 const SearchList = () => {
   const location = useLocation();
@@ -27,7 +27,7 @@ const SearchList = () => {
   return (
     <>
       <Helmet>
-        <title>Search results - {query} | Qspace</title>
+        <title>Search results  {query}</title>
         <meta name="description" content="Search latest tech, coding, and career articles." />
       </Helmet>
 
