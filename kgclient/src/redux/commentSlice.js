@@ -1,12 +1,9 @@
 // src/redux/commentSlice.js
-
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loading: false,
-  comment: "",
-  error: null,         // Optional: useful for displaying error messages
-  success: false,      // Optional: to track if comment was successfully posted
+  comment: [],
 };
 
 const commentSlice = createSlice({
@@ -16,37 +13,18 @@ const commentSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
-
     setComment: (state, action) => {
-      state.comment = action.payload;
-      state.success = false;  // Reset success on new input
+      state.comment = Array.isArray(action.payload) ? action.payload : [];
     },
-
-    clearComment: (state) => {
-      state.comment = "";
-      state.success = false;
-      state.error = null;
-    },
-
-    setCommentError: (state, action) => {
-      state.error = action.payload;
-      state.loading = false;
-    },
-
-    addCommentSuccess: (state) => {
-      state.loading = false;
-      state.success = true;
+    addComment: (state, action) => {
+      if (!Array.isArray(state.comment)) {
+        state.comment = [];
+      }
+      state.comment.push(action.payload);
     },
   },
 });
 
-export const {
-  setLoading,
-  setComment,
-  clearComment,
-  setCommentError,
-  addCommentSuccess,
-} = commentSlice.actions;
-
+export const { setLoading, setComment, addComment } = commentSlice.actions;
 export default commentSlice.reducer;
 
