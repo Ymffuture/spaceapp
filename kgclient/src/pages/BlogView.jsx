@@ -45,6 +45,20 @@ const BlogView = () => {
     setTimeout(() => setLoading(false), 800);
   }, [selectedBlog, user]);
 
+useEffect(() => {
+  if (!selectedBlog && blogId) {
+    axios
+      .get(`https://kgserver-bjy2.onrender.com/api/v1/blog/${blogId}`)
+      .then((res) => {
+        if (res.data.success) {
+          dispatch(setBlog([res.data.blog])); // Add the blog to Redux
+        }
+      })
+      .catch(() => toast.error('Failed to load blog.'));
+  }
+}, [selectedBlog, blogId, dispatch]);
+
+  
   useEffect(() => {
     socket.on('reactionUpdate', ({ blogId: updatedId, likes, dislikes }) => {
       if (updatedId === selectedBlog?._id) {
