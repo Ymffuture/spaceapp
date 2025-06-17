@@ -57,65 +57,58 @@ const BlogView = () => {
     };
   }, [selectedBlog]);
 
-  const toggleReaction = async (action, enable = true) => {
-    try {
-      const res = await axios.get(
-        `https://kgserver-bjy2.onrender.com/api/v1/blog/${selectedBlog?._id}/${action}`,
-        { withCredentials: true }
+  const toggleReaction = async (action) => {
+  try {
+    const res = await axios.post(
+      `https://kgserver-bjy2.onrender.com/api/v1/blog/${selectedBlog?._id}/${action}`,
+      {},
+      { withCredentials: true }
+    );
+
+    if (res.data.success) {
+      toast.success(res.data.message);
+
+      // Emit socket update
+      socket.emit('updateReaction', selectedBlog._id);
+
+      // Update Redux blog state
+      const updated = res.data.blog;
+      const updatedBlog = blog.map((b) =>
+        b._id === updated._id ? updated : b
       );
-      if (res.data.success) {
-        toast.success(res.data.message);
-        const updatedBlog = blog.map((b) =>
-          b._id === selectedBlog._id
-            ? {
-                ...b,
-                likes:
-                  action === 'like'
-                    ? [...b.likes, user._id]
-                    : b.likes.filter((id) => id !== user._id),
-              }
-            : b
-        );
-        dispatch(setBlog(updatedBlog));
-        socket.emit('updateReaction', selectedBlog._id);
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.message || 'Error updating reaction');
-    }
-  };
+      dispatch(setBlog(updatedBlog));
 
-  const handleLike = async () => {
-    if (liked) {
-      await toggleReaction('dislike', false);
-      setLiked(false);
-      setLikeCount((prev) => prev - 1);
-    } else {
-      if (disliked) {
-        setDisliked(false);
-        setDislikeCount((prev) => prev - 1);
-      }
-      await toggleReaction('like', true);
-      setLiked(true);
-      setLikeCount((prev) => prev + 1);
+      // Update local UI state
+      setLikeCount(updated.likes.length);
+      setDislikeCount(updated.dislikes.length);
+      setLiked(updated.likes.includes(user._id));
+      setDisliked(updated.dislikes.includes(user._id));
     }
-  };
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Reaction failed');
+  }
+};
 
-  const handleDislike = () => {
-    if (disliked) {
-      setDisliked(false);
-      setDislikeCount((prev) => prev - 1);
-    } else {
-      if (liked) {
-        setLiked(false);
-        setLikeCount((prev) => prev - 1);
-      }
-      setDisliked(true);
-      setDislikeCount((prev) => prev + 1);
-      toast('You disliked this post');
-    }
-  };
+const handleLike = () => {
+  if (liked) {
+    toggleReaction('unlike');
+  } else {
+    toggleReaction('like');
+  }
+};
 
+const handleDislike = () => {
+  if (disliked) {
+    toggleReaction('undislike');
+  } else {
+    toggleReaction('dislike');
+  }
+};
+
+
+
+
+  
   const changeTimeFormat = (isoDate) => {
     const date = new Date(isoDate);
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
