@@ -1,74 +1,51 @@
+// src/redux/commentSlice.js
+
 import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  loading: false,
+  comment: "",
+  error: null,         // Optional: useful for displaying error messages
+  success: false,      // Optional: to track if comment was successfully posted
+};
 
 const commentSlice = createSlice({
   name: "comment",
-  initialState: {
-    loading: false,
-    error: null,
-    commentText: "",       // for input box
-    comments: [],          // all comments for a post
-    replyingTo: null,      // comment ID being replied to
-    editingId: null,       // comment ID being edited
-    successMessage: "",    // feedback toast
-  },
+  initialState,
   reducers: {
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
-    setError: (state, action) => {
-      state.error = action.payload;
-    },
-    setCommentText: (state, action) => {
-      state.commentText = action.payload;
-    },
+
     setComment: (state, action) => {
-      state.comments = action.payload;
+      state.comment = action.payload;
+      state.success = false;  // Reset success on new input
     },
-    addComment: (state, action) => {
-      state.comments.unshift(action.payload); // new comment at top
-    },
-    updateComment: (state, action) => {
-      const updated = action.payload;
-      state.comments = state.comments.map(c =>
-        c._id === updated._id ? updated : c
-      );
-    },
-    deleteComment: (state, action) => {
-      const commentId = action.payload;
-      state.comments = state.comments.filter(c => c._id !== commentId);
-    },
-    setReplyingTo: (state, action) => {
-      state.replyingTo = action.payload;
-    },
-    setEditingId: (state, action) => {
-      state.editingId = action.payload;
-    },
-    setSuccessMessage: (state, action) => {
-      state.successMessage = action.payload;
-    },
-    clearState: (state) => {
-      state.loading = false;
+
+    clearComment: (state) => {
+      state.comment = "";
+      state.success = false;
       state.error = null;
-      state.commentText = "";
-      state.replyingTo = null;
-      state.editingId = null;
-      state.successMessage = "";
+    },
+
+    setCommentError: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
+    addCommentSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
     },
   },
 });
 
 export const {
   setLoading,
-  setError,
-  setCommentText,
   setComment,
-  addComment,
-  updateComment,
-  deleteComment,
-  setReplyingTo,
-  setEditingId,
-  setSuccessMessage,
-  clearState,
+  clearComment,
+  setCommentError,
+  addCommentSuccess,
 } = commentSlice.actions;
 
 export default commentSlice.reducer;
