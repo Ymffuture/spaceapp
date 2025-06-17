@@ -1,3 +1,4 @@
+// commentBox.jsx (UPDATED)
 import React, { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import axios from 'axios'
@@ -5,15 +6,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar'
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 import { LuSend } from "react-icons/lu"
-import { FaThumbsUp } from "react-icons/fa6"
-
+import { FaThumbsUp, FaLaughSquint, FaAngry, FaSadTear, FaRegGrinStars } from "react-icons/fa"
 import { setComment } from '@/redux/commentSlice'
 import CommentSkeleton from './CommentSkeleton'
+import TimeAgo from './TimeAgo' // New live time component
 
 const socket = io("https://kgserver-bjy2.onrender.com")
 
@@ -29,7 +29,6 @@ const CommentBox = ({ selectedBlog }) => {
   const [loading, setLoading] = useState(true)
   const [showReplies, setShowReplies] = useState({})
 
-  // Real-time new comment via socket
   useEffect(() => {
     socket.on("newComment", (newComment) => {
       if (newComment.postId === selectedBlog._id) {
@@ -37,12 +36,9 @@ const CommentBox = ({ selectedBlog }) => {
       }
     })
 
-    return () => {
-      socket.off("newComment") // clean up listener
-    }
+    return () => socket.off("newComment")
   }, [selectedBlog._id, dispatch])
 
-  // Fetch comments from server
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -69,7 +65,6 @@ const CommentBox = ({ selectedBlog }) => {
     fetchComments()
   }, [selectedBlog._id, dispatch])
 
-  // Submit new or reply comment
   const sendComment = async (parentId = null) => {
     const text = parentId ? replyText : content
     if (!text.trim()) return toast.error("Comment cannot be empty")
@@ -95,7 +90,6 @@ const CommentBox = ({ selectedBlog }) => {
     }
   }
 
-  // Like handler with socket update
   const handleLike = async (id) => {
     try {
       const res = await axios.get(`https://kgserver-bjy2.onrender.com/api/v1/comment/${id}/like`, {
@@ -107,18 +101,6 @@ const CommentBox = ({ selectedBlog }) => {
     } catch {
       toast.error("Like failed")
     }
-  }
-
-  const getTimeAgo = (date) => {
-    const now = new Date()
-    const past = new Date(date)
-    const diff = Math.floor((now - past) / 1000)
-
-    if (diff < 60) return `${diff}s ago`
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
-    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`
-    return past.toLocaleDateString()
   }
 
   const toggleReplies = (commentId) => {
@@ -164,12 +146,20 @@ const CommentBox = ({ selectedBlog }) => {
                       <span>{c.numberOfLikes || 0}</span>
                     </button>
                     <button onClick={() => setReplyingTo(c._id)} className="hover:underline">Reply</button>
-                    <span>{getTimeAgo(c.createdAt)}</span>
+                    <TimeAgo date={c.createdAt} />
                     {replyMap[c._id]?.length > 0 && (
                       <button onClick={() => toggleReplies(c._id)} className="hover:underline">
                         {showReplies[c._id] ? 'Hide Replies' : `View ${replyMap[c._id].length} Replies`}
                       </button>
                     )}
+                  </div>
+
+                  {/* Reactions */}
+                  <div className="flex gap-2 mt-2 text-lg text-muted-foreground">
+                    <FaLaughSquint className="cursor-pointer hover:text-yellow-500" />
+                    <FaSadTear className="cursor-pointer hover:text-blue-400" />
+                    <FaAngry className="cursor-pointer hover:text-red-500" />
+                    <FaRegGrinStars className="cursor-pointer hover:text-green-500" />
                   </div>
 
                   {/* Reply Input */}
@@ -195,11 +185,14 @@ const CommentBox = ({ selectedBlog }) => {
                           <ReactMarkdown className="text-sm" remarkPlugins={[remarkGfm]}>
                             {r.content}
                           </ReactMarkdown>
-                          <div className="text-xs text-muted-foreground mt-1">{getTimeAgo(r.createdAt)}</div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            <TimeAgo date={r.createdAt} />
+                          </div>
                         </div>
                       </div>
                     </div>
                   ))}
+
                 </div>
               </div>
             </div>
