@@ -32,7 +32,6 @@ const CreateBlog = () => {
   }));
 
   const createBlogHandler = async () => {
-  const createBlogHandler = async () => {
   if (!title || !category) {
     return toast.error("Please enter a title and select a category");
   }
