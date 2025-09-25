@@ -32,31 +32,53 @@ const CreateBlog = () => {
   }));
 
   const createBlogHandler = async () => {
-    if (!title || !category) return toast.error("Please enter title and select category");
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        `https://kgserver-bjy2.onrender.com/api/v1/blog`,
-        { title, category: category.value },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        }
-      );
-      if (res.data.success) {
-        dispatch(setBlog([...blog, res.data.blog]));
-        navigate(`/dashboard/write-blog/${res.data.blog._id}`);
-        toast.success(res.data.message);
-      } else {
-        toast.error('Something went wrong');
+  const createBlogHandler = async () => {
+  if (!title || !category) {
+    return toast.error("Please enter a title and select a category");
+  }
+
+  try {
+    setLoading(true);
+
+    const payload = {
+      title: title.trim(),
+      category: category?.value,
+    };
+
+    console.log("Sending payload:", payload);
+
+    const res = await axios.post(
+      "https://kgserver-bjy2.onrender.com/api/v1/blog",
+      payload,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
       }
-    } catch (error) {
-      console.log(error);
-      toast.error("Error creating blog");
-    } finally {
-      setLoading(false);
+    );
+
+    console.log("API response:", res.data);
+
+    if (res.data?.success && res.data?.blog) {
+      // Ensure blog state is always an array
+      dispatch(setBlog([...(blog || []), res.data.blog]));
+
+      toast.success(res.data?.message || "Blog created successfully!");
+      navigate(`/dashboard/write-blog/${res.data.blog._id}`);
+    } else {
+      toast.error(res.data?.message || "Failed to create blog");
     }
-  };
+  } catch (error) {
+    console.error("Error creating blog:", error);
+    console.error("Server response:", error.response?.data);
+
+    toast.error(
+      error.response?.data?.message || "Server error while creating blog"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <>
