@@ -36,7 +36,7 @@ const CreateBlog = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        `https://kgserver-bjy2.onrender.com/api/v1/blog/`,
+        `https://kgserver-bjy2.onrender.com/api/v1/blog`,
         { title, category: category.value },
         {
           headers: { 'Content-Type': 'application/json' },
