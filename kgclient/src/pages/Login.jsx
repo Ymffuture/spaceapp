@@ -30,6 +30,9 @@ const Login = () => {
         "https://kgserver-bjy2.onrender.com/api/v1/user/auth/google-login",
         {
           token: credentialResponse.credential,
+        },
+        {
+          withCredentials: true,
         }
       );
 
@@ -210,4 +213,3 @@ const Login = () => {
 };
 
 export default Login;
-
