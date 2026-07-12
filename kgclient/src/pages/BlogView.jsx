@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { ThumbsUp, ThumbsDown, MessageSquare, Bookmark, Share2 } from 'lucide-react';
 import CommentBox from '@/components/CommentBox';
 import axios from 'axios';
-import { setBlog } from '@/redux/blogSlice';
+import { setBlog, upsertBlog } from '@/redux/blogSlice';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -52,7 +52,9 @@ const BlogView = () => {
         .get(`https://kgserver-bjy2.onrender.com/api/v1/blog/${blogId}`)
         .then((res) => {
           if (res.data.success) {
-            dispatch(setBlog([res.data.blog]));
+            dispatch(upsertBlog(res.data.blog));
+          } else {
+            toast.error('Blog not found.');
           }
         })
         .catch(() => toast.error('Failed to load blog.'));
@@ -117,7 +119,7 @@ const BlogView = () => {
     }
   };
 
-  if (loading || !selectedBlog || !selectedBlog.author) {
+  if (loading || !selectedBlog) {
     return (
       <div className="pt-16 max-w-4xl mx-auto px-6 sm:px-10 lg:px-0">
         <Skeleton className="h-6 w-40 mb-3" />
@@ -263,4 +265,3 @@ const BlogView = () => {
 };
 
 export default BlogView;
-
