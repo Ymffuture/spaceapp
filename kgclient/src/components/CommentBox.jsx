@@ -1,5 +1,5 @@
 // commentBox.jsx (UPDATED)
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import io from 'socket.io-client'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
@@ -29,10 +29,17 @@ const CommentBox = ({ selectedBlog }) => {
   const [loading, setLoading] = useState(true)
   const [showReplies, setShowReplies] = useState({})
 
+  // setComment sets Redux state directly (no functional-update support), so the
+  // socket handler below needs the latest comments via a ref rather than a
+  // stale closure over `comment`.
+  const commentRef = useRef(comment)
+  useEffect(() => { commentRef.current = comment }, [comment])
+
   useEffect(() => {
     socket.on("newComment", (newComment) => {
       if (newComment.postId === selectedBlog._id) {
-        dispatch(setComment(prev => [...prev, newComment]))
+        const current = Array.isArray(commentRef.current) ? commentRef.current : []
+        dispatch(setComment([...current, newComment]))
       }
     })
 
@@ -107,7 +114,7 @@ const CommentBox = ({ selectedBlog }) => {
     setShowReplies(prev => ({ ...prev, [commentId]: !prev[commentId] }))
   }
 
-  const topLevelComments = comment.filter(c => !c.parentId)
+  const topLevelComments = Array.isArray(comment) ? comment.filter(c => !c.parentId) : []
 
   return (
     <div className="space-y-4">
@@ -142,7 +149,7 @@ const CommentBox = ({ selectedBlog }) => {
                   {/* Action Bar */}
                   <div className="flex gap-4 items-center mt-1 text-xs text-muted-foreground">
                     <button onClick={() => handleLike(c._id)} className="flex items-center gap-1 hover:text-primary">
-                      <FaThumbsUp className={c.likes.includes(user._id) ? "text-blue-600" : ""} size={14} />
+                      <FaThumbsUp className={user && c.likes.includes(user._id) ? "text-blue-600" : ""} size={14} />
                       <span>{c.numberOfLikes || 0}</span>
                     </button>
                     <button onClick={() => setReplyingTo(c._id)} className="hover:underline">Reply</button>
@@ -204,4 +211,3 @@ const CommentBox = ({ selectedBlog }) => {
 }
 
 export default CommentBox
-
