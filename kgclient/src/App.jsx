@@ -55,7 +55,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/blogs/:blogId",
-    element: <><Navbar /><ProtectedRoute><BlogView /></ProtectedRoute></>, 
+    element: <><Navbar /><BlogView /></>, 
 errorElement:<NotFound/>
   },
   {
@@ -117,4 +117,3 @@ const App = () => {
 }
 
 export default App
-
