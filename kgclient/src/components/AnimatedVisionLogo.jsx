@@ -3,10 +3,9 @@ import React from "react";
 const AnimatedVisionLogo = ({
   size = 64,
   color = "#1E90FF",
-  speed = 4 // animation duration in seconds
+  speed = 2 // seconds per full rotation
 }) => {
-  const dashArray = 2 * Math.PI * 30; // Circumference of r=30 (circle)
-  const duration = `${speed}s`;
+  const dashArray = 2 * Math.PI * 30;
 
   return (
     <svg
@@ -16,12 +15,23 @@ const AnimatedVisionLogo = ({
       height={size}
     >
       <style>{`
-        .circle {
+        .circle-track {
+          fill: none;
+          stroke: ${color};
+          stroke-width: 2;
+          opacity: 0.15;
+        }
+
+        .circle-spinner {
+          fill: none;
+          stroke: ${color};
+          stroke-width: 4;
+          stroke-linecap: round;
           stroke-dasharray: ${dashArray};
-          stroke-dashoffset: ${dashArray};
-          animation: circleSpin ${duration} ease-in-out infinite;
-          transform: rotate(-90deg);
           transform-origin: center;
+          animation: 
+            spin ${speed}s linear infinite,
+            dash ${speed * 0.75}s ease-in-out infinite;
         }
 
         .vision-path {
@@ -29,12 +39,21 @@ const AnimatedVisionLogo = ({
           transform-origin: center;
         }
 
-        @keyframes circleSpin {
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes dash {
           0% {
             stroke-dashoffset: ${dashArray};
           }
           50% {
-            stroke-dashoffset: 0;
+            stroke-dashoffset: ${dashArray * 0.25};
           }
           100% {
             stroke-dashoffset: ${dashArray};
@@ -48,27 +67,32 @@ const AnimatedVisionLogo = ({
           }
           50% {
             stroke-width: 6;
-            opacity: 0.6;
+            opacity: 0.7;
           }
         }
       `}</style>
 
-      {/* Circle stroke animation */}
+      {/* Background track circle */}
       <circle
         cx="32"
         cy="32"
         r="30"
-        fill="transparent"
-        stroke={color}
-        strokeWidth="4"
-        className="circle"
+        className="circle-track"
+      />
+
+      {/* Spinning circle with dash animation */}
+      <circle
+        cx="32"
+        cy="32"
+        r="30"
+        className="circle-spinner"
       />
 
       {/* Eye-like vision path */}
       <path
         d="M32 20a12 12 0 1 1 0 24m0 0l6 6"
         stroke={color}
-        fill="transparent"
+        fill="none"
         strokeWidth="4"
         strokeLinecap="round"
         className="vision-path"
@@ -78,4 +102,3 @@ const AnimatedVisionLogo = ({
 };
 
 export default AnimatedVisionLogo;
-
