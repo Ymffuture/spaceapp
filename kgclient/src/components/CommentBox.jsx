@@ -61,7 +61,9 @@ const CommentBox = ({ selectedBlog }) => {
         const res = await axios.get(
           `https://kgserver-bjy2.onrender.com/api/v1/comment/${selectedBlog._id}/comment/all`
         );
-        const comments = res.data.comments;
+        // Guard against a non-array response (failed request, unexpected
+        // shape, etc.) — .forEach on anything else would crash the page.
+        const comments = Array.isArray(res.data.comments) ? res.data.comments : [];
         dispatch(setComment(comments));
 
         const map = {};
@@ -74,6 +76,7 @@ const CommentBox = ({ selectedBlog }) => {
         setReplyMap(map);
       } catch {
         toast.error("Failed to load comments");
+        dispatch(setComment([]));
       } finally {
         setLoading(false);
       }
@@ -116,7 +119,8 @@ const CommentBox = ({ selectedBlog }) => {
         { withCredentials: true }
       );
       if (res.data.success) {
-        dispatch(setComment(comment.map(c => c._id === id ? res.data.updatedComment : c)));
+        const current = Array.isArray(comment) ? comment : [];
+        dispatch(setComment(current.map(c => c._id === id ? res.data.updatedComment : c)));
       }
     } catch {
       toast.error("Like failed");
