@@ -360,9 +360,7 @@ const BlogView = () => {
           <div className="mt-16 pt-12 border-t border-gray-200 dark:border-zinc-800">
             <h2 className="text-2xl font-bold tracking-tight mb-8 flex items-center gap-3">
               Discussion
-              <span className="px-3 py-1 bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 text-sm font-semibold rounded-full">
-                {selectedBlog.comments?.length || 0}
-              </span>
+  
             </h2>
             <CommentBox selectedBlog={selectedBlog} />
           </div>
