@@ -358,10 +358,6 @@ const BlogView = () => {
 
           {/* ─── Comments Section ───────────────────────────────── */}
           <div className="mt-16 pt-12 border-t border-gray-200 dark:border-zinc-800">
-            <h2 className="text-2xl font-bold tracking-tight mb-8 flex items-center gap-3">
-              Discussion
-  
-            </h2>
             <CommentBox selectedBlog={selectedBlog} />
           </div>
 
