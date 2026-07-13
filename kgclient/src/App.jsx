@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
 import AnimatedVisionLogo from './components/AnimatedVisionLogo' // Custom loader
 import NotFound from './pages/NotFound';
+import ErrorPage from './pages/ErrorPage';
 // Lazy load pages
 const Home = lazy(() => import('./pages/Home'))
 const Blog = lazy(() => import('./pages/Blog'))
@@ -25,50 +26,58 @@ const PrivacyPolicy = lazy(()=>import('./pages/PrivacyPolicy'))
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <><Navbar /><Home /><Footer /></>
+    element: <><Navbar /><Home /><Footer /></>,
+    errorElement: <ErrorPage />
   },
   {
     path: "/blogs",
-    element: <><Navbar /><Blog /><Footer /></>
+    element: <><Navbar /><Blog /><Footer /></>,
+    errorElement: <ErrorPage />
   },
   {
     path: "/about",
-    element: <><Navbar /><About /><Footer /></>
+    element: <><Navbar /><About /><Footer /></>,
+    errorElement: <ErrorPage />
   },
-    {
+  {
     path: "/terms",
-    element: <><Navbar /><Terms /></>
+    element: <><Navbar /><Terms /></>,
+    errorElement: <ErrorPage />
   },
-    {
+  {
     path: "/privacy",
-    element: <><Navbar /><PrivacyPolicy /></>
+    element: <><Navbar /><PrivacyPolicy /></>,
+    errorElement: <ErrorPage />
   },
   {
     path: "/*",
-    element: <><NotFound /></>
+    element: <><NotFound /></>,
+    errorElement: <ErrorPage />
   },
-  
   {
     path: "/search",
     element: <><Navbar /><SearchList /><Footer/></>, 
-    errorElement:<NotFound/>
+    errorElement: <ErrorPage />
   },
   {
     path: "/blogs/:blogId",
     element: <><Navbar /><BlogView /></>, 
-errorElement:<NotFound/>
+    errorElement: <ErrorPage />
   },
   {
     path: "/write-blog",
-    element: <><Navbar /><CreateBlog /></>
+    element: <><Navbar /><CreateBlog /></>,
+    errorElement: <ErrorPage />
   },
   {
     path: "/profile",
-    element: <><Navbar /><Profile /></>
+    element: <><Navbar /><Profile /></>,
+    errorElement: <ErrorPage />
   },
   {
     path: "/dashboard",
     element: <><Navbar /><ProtectedRoute><Dashboard /></ProtectedRoute></>,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "write-blog",
@@ -94,11 +103,13 @@ errorElement:<NotFound/>
   },
   {
     path: "/signup",
-    element: <><Navbar /><Signup /></>
+    element: <><Navbar /><Signup /></>,
+    errorElement: <ErrorPage />
   },
   {
     path: "/login",
-    element: <><Navbar /><Login /></>
+    element: <><Navbar /><Login /></>,
+    errorElement: <ErrorPage />
   }
 ])
 
