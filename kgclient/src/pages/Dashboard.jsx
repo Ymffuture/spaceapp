@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Sidebar from '@/components/Sidebar'
 
 // Optional: Import if you want a top header bar inside the dashboard
-import { Bell, Search, Menu, X, ChevronRight } from 'lucide-react'
+import { Bell, Search, Menu, X, ChevronRight, PanelsTopLeft } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 const Dashboard = () => {
@@ -116,7 +116,7 @@ const Dashboard = () => {
                 onClick={() => setMobileSidebarOpen(true)}
                 className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               >
-                <Menu size={20} />
+                <PanelsTopLeft size={20} />
               </button>
 
               <nav className="hidden sm:flex items-center gap-2 text-sm text-gray-400 dark:text-zinc-500">
@@ -140,14 +140,7 @@ const Dashboard = () => {
               </button>
 
               {/* User Avatar */}
-              <div className="ml-1">
-                <Avatar className="w-8 h-8 border-2 border-white dark:border-zinc-800 shadow-sm cursor-pointer hover:ring-2 hover:ring-blue-500/20 transition-all">
-                  <AvatarImage src={user?.photoUrl} />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-700 text-white text-xs font-bold">
-                    {user?.firstName?.[0] || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
+              
             </div>
           </header>
 
