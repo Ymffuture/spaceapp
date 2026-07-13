@@ -159,7 +159,13 @@ const CommentBox = ({ selectedBlog }) => {
 
   // ─── Render Reactions for a Comment ────────────────────────────
   const renderReactions = (c) => {
-    const reactions = c.reactions || [
+    // c.reactions is a Mongoose Map on the backend, which serializes to a
+    // plain object ({}) in JSON — never an array. `{} || fallback` doesn't
+    // fall through since {} is truthy, so this must be an explicit
+    // Array.isArray check, or reactions.map() below crashes on every comment.
+    const reactions = Array.isArray(c.reactions) && c.reactions.length > 0
+      ? c.reactions
+      : [
       { emoji: '👍', count: c.numberOfLikes || 0, active: user && c.likes?.includes(user._id) }
     ];
 
