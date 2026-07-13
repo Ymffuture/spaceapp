@@ -7,7 +7,7 @@ import { Eye, MessageSquare, FileText } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
-import TimeAgo from './TimeAgo'
+import TimeAgo from '@/components/TimeAgo'
 
 const Comments = () => {
   const [allComments, setAllComments] = useState([])
