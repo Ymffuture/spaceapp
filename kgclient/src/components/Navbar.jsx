@@ -1,358 +1,352 @@
 // Navbar.jsx (PREMIUM REDESIGN)
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import Logo from "../assets/Qspace.svg";
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'sonner';
-import axios from 'axios';
-import { setUser } from '@/redux/authSlice';
-import { toggleTheme } from '@/redux/themeSlice';
+import React, { useState, useEffect, useRef } from 'react'
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
+import axios from 'axios'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Tooltip } from "react-tooltip"
+import "react-tooltip/dist/react-tooltip.css"
+
+// UI Components
+import { Button } from './ui/button'
+import { Input } from './ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import {
-  Search,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+// Icons
+import {
   Home,
   BookOpen,
   Info,
   PenLine,
   Moon,
   Sun,
-  Bell,
+  Search,
   LogOut,
   User,
   BarChart3,
   MessageSquareText,
-  Settings,
   Menu,
   X,
-  Command,
-} from "lucide-react";
-import { motion, AnimatePresence } from 'framer-motion';
-import ResponsiveMenu from './ResponsiveMenu';
+  ChevronDown,
+} from "lucide-react"
+import { FaCheckCircle, FaSignInAlt } from 'react-icons/fa'
+
+// Redux
+import { setUser } from '@/redux/authSlice'
+import { toggleTheme } from '@/redux/themeSlice'
+
+// Assets
+import Logo from "../assets/Qspace.svg"
+import ResponsiveMenu from './ResponsiveMenu'
 
 const Navbar = () => {
-  const { user } = useSelector(store => store.auth);
-  const { theme } = useSelector(store => store.theme);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const dispatch = useDispatch();
+  const { user } = useSelector(store => store.auth)
+  const { theme } = useSelector(store => store.theme)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [openNav, setOpenNav] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const dropdownRef = useRef(null);
-  const searchRef = useRef(null);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [openNav, setOpenNav] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [hovered, setHovered] = useState(false)
 
-  // ─── Scroll Detection ────────────────────────────────────────────
+  // ─── Scroll Detection ────────────────────────────────────────
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const handleScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-  // ─── Click Outside Dropdown ──────────────────────────────────────
+  // ─── Close mobile menu on route change ───────────────────────
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    setOpenNav(false)
+  }, [location.pathname])
 
-  // ─── Keyboard Shortcut: Cmd+K ──────────────────────────────────
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        searchRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
+  // ─── Logout ──────────────────────────────────────────────────
   const logoutHandler = async () => {
     try {
       const res = await axios.get(
         `https://kgserver-bjy2.onrender.com/api/v1/user/logout`,
         { withCredentials: true }
-      );
+      )
       if (res.data.success) {
-        navigate("/");
-        dispatch(setUser(null));
-        toast.success(res.data.message);
+        navigate("/")
+        dispatch(setUser(null))
+        toast.success(res.data.message)
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Logout failed");
+      console.log(error)
+      toast.error(error.response?.data?.message || 'Logout failed')
     }
-  };
+  }
 
+  // ─── Search ────────────────────────────────────────────────────
   const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
-      setSearchTerm('');
+    e.preventDefault()
+    if (searchTerm.trim() !== '') {
+      navigate(`/search?q=${encodeURIComponent(searchTerm)}`)
+      setSearchTerm('')
     }
-  };
+  }
 
-  const isActive = (path) => location.pathname === path;
-
+  // ─── Nav Links Config ────────────────────────────────────────
   const navLinks = [
-    { to: '/', icon: Home, label: 'Home' },
-    { to: '/blogs', icon: BookOpen, label: 'Blogs' },
-    { to: '/about', icon: Info, label: 'About' },
-  ];
+    { to: '/', icon: Home, label: 'Home', tooltip: 'Home' },
+    { to: '/blogs', icon: BookOpen, label: 'Blogs', tooltip: 'Blogs' },
+    { to: '/about', icon: Info, label: 'About', tooltip: 'About' },
+    { to: '/dashboard/write-blog', icon: PenLine, label: 'Write', tooltip: 'Write a Blog' },
+  ]
+
+  const isActive = (path) => location.pathname === path
 
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300
           ${scrolled
-            ? 'bg-white/85 dark:bg-gray-900/85 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] border-b border-gray-200/50 dark:border-gray-700/50'
-            : 'bg-white dark:bg-gray-900 border-b border-transparent'
+            ? 'bg-white/85 dark:bg-[#0f0f0f]/85 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)] border-b border-black/[0.06] dark:border-white/[0.06]'
+            : 'bg-white/60 dark:bg-[#0f0f0f]/60 backdrop-blur-md border-b border-transparent'
           }`}
       >
-        <div className="max-w-7xl mx-auto h-16 flex items-center justify-between px-4 lg:px-6">
-          
-          {/* ─── LEFT: Logo + Search ───────────────────────────────── */}
-          <div className="flex items-center gap-6">
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={() => setOpenNav(!openNav)}
-              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              {openNav ? <X size={20} /> : <Menu size={20} />}
-            </button>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-[60px] gap-4">
+            
+            {/* ─── Left: Logo + Mobile Toggle ────────────────────── */}
+            <div className="flex items-center gap-4 flex-shrink-0">
+              <button
+                onClick={() => setOpenNav(!openNav)}
+                className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                {openNav ? <X size={22} /> : <Menu size={22} />}
+              </button>
 
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white font-extrabold text-sm shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
-                Q
-              </div>
-              <span className="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white hidden sm:block">
-                Qspace
-              </span>
-            </Link>
+              <Link to="/" className="flex items-center gap-2.5 group">
+                <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white font-extrabold text-sm shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all">
+                  Q
+                </div>
+                <span className="font-bold text-xl tracking-tight hidden sm:block">Qspace</span>
+              </Link>
+            </div>
 
-            {/* Search Bar */}
-            <form onSubmit={handleSearch} className="hidden md:block relative group">
-              <Search
-                size={15}
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors"
-              />
-              <Input
-                ref={searchRef}
-                type="search"
-                placeholder="Search articles..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-[320px] lg:w-[420px] h-10 pl-10 pr-16 bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 rounded-full text-sm focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-400 transition-all placeholder:text-gray-400"
-              />
-              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-semibold text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md">
-                <Command size={10} />K
-              </kbd>
-            </form>
-          </div>
-
-          {/* ─── CENTER: Nav Links (Pill) ───────────────────────────── */}
-          <nav className="hidden lg:flex items-center">
-            <div className="flex items-center gap-1 p-1 bg-gray-100/80 dark:bg-gray-800/50 rounded-full border border-gray-200/50 dark:border-gray-700/50">
-              {navLinks.map(({ to, icon: Icon, label }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  className={({ isActive }) =>
-                    `relative flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 group ${isActive
-                      ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
-                    }`
-                  }
-                  title={label}
+            {/* ─── Center: Search Bar ────────────────────────────── */}
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-[520px] mx-4">
+              <div className="relative w-full group">
+                <Input
+                  type="search"
+                  placeholder="Search articles, topics, authors..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full h-10 pl-4 pr-11 rounded-full border border-black/[0.08] bg-black/[0.02] dark:bg-white/[0.03] dark:border-white/[0.08] text-sm placeholder:text-gray-400 dark:placeholder:text-zinc-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-500 transition-all group-hover:bg-white dark:group-hover:bg-white/[0.05]"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-zinc-300 transition-all"
                 >
-                  <Icon size={17} strokeWidth={2} />
-                  {isActive(to) && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute inset-0 rounded-full bg-white dark:bg-gray-700 shadow-sm -z-10"
-                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </NavLink>
-              ))}
-              <div className="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1" />
+                  <Search size={15} strokeWidth={2.5} />
+                </button>
+              </div>
+            </form>
+
+            {/* ─── Right: Nav + Auth ─────────────────────────────── */}
+            <div className="flex items-center gap-1.5">
+              
+              {/* Desktop Nav Links */}
+              <nav className="hidden md:flex items-center gap-1 p-1 rounded-full bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.04]">
+                {navLinks.map(({ to, icon: Icon, label, tooltip }) => (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    data-tooltip-id="nav-tooltip"
+                    data-tooltip-content={tooltip}
+                    className={({ isActive }) =>
+                      `relative w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 ${isActive
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                        : 'text-gray-500 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-gray-800 dark:hover:text-zinc-200'
+                      }`
+                    }
+                  >
+                    <Icon size={17} strokeWidth={2} />
+                  </NavLink>
+                ))}
+
+                {/* Theme Toggle */}
+                <button
+                  onClick={() => dispatch(toggleTheme())}
+                  data-tooltip-id="nav-tooltip"
+                  data-tooltip-content="Toggle Theme"
+                  className="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-gray-800 dark:hover:text-zinc-200 transition-all"
+                >
+                  {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+                </button>
+              </nav>
+
+              {/* Mobile Theme Toggle */}
               <button
                 onClick={() => dispatch(toggleTheme())}
-                className="flex items-center justify-center w-10 h-10 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition-all"
-                title="Toggle theme"
+                className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl text-gray-500 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5 transition-all"
               >
-                {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+                {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
               </button>
-            </div>
-          </nav>
 
-          {/* ─── RIGHT: Actions + Avatar ────────────────────────────── */}
-          <div className="flex items-center gap-2">
-            {/* Write Button */}
-            <button
-              onClick={() => navigate('/dashboard/write-blog')}
-              className="hidden sm:flex items-center gap-2 h-9 px-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-all hover:-translate-y-px hover:shadow-lg active:translate-y-0"
-            >
-              <PenLine size={15} />
-              <span>Write</span>
-            </button>
-
-            {/* Mobile Write Icon */}
-            <button
-              onClick={() => navigate('/dashboard/write-blog')}
-              className="sm:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
-            >
-              <PenLine size={18} />
-            </button>
-
-            {/* Notifications */}
-            <button className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400">
-              <Bell size={18} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-900" />
-            </button>
-
-            {/* User Dropdown */}
-            {user ? (
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 pl-1 pr-1 py-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
-                >
-                  <Avatar className="w-8 h-8 border-2 border-transparent hover:border-blue-500 transition-colors">
-                    <AvatarImage src={user.photoUrl || '/user.png'} />
-                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-700 text-white text-xs font-bold">
-                      {user.firstName?.[0] || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
-
-                <AnimatePresence>
-                  {dropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                      transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                      className="absolute right-0 top-[calc(100%+10px)] w-64 bg-white dark:bg-gray-900 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-gray-100 dark:border-gray-700 overflow-hidden"
+              {/* ─── Auth Section ──────────────────────────────── */}
+              {user ? (
+                <div className="ml-2">
+                  <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+                    <div
+                      className="relative"
+                      onMouseEnter={() => setHovered(true)}
+                      onMouseLeave={() => setHovered(false)}
                     >
-                      {/* Header */}
-                      <div className="p-4 bg-gradient-to-br from-blue-600 via-blue-600 to-violet-600">
-                        <p className="text-sm font-bold text-white">
-                          {user?.firstName || 'Qspace'}
-                        </p>
-                        <p className="text-xs text-blue-100 truncate mt-0.5">
-                          {user.email}
-                        </p>
-                        {user.email === 'futurekgomotso@gmail.com' && (
-                          <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 bg-yellow-400/20 text-yellow-200 text-[10px] font-bold uppercase tracking-wider rounded-full border border-yellow-400/30">
-                            Admin
-                          </span>
+                      <DropdownMenuTrigger asChild>
+                        <Avatar className="w-9 h-9 cursor-pointer border-2 border-transparent hover:border-blue-500/30 transition-all hover:scale-105 shadow-sm">
+                          <AvatarImage src={user.photoUrl || '/user.png'} />
+                          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-700 text-white text-xs font-bold">
+                            {user.firstName?.[0] || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                      </DropdownMenuTrigger>
+
+                      {/* Hover Preview Card */}
+                      <AnimatePresence>
+                        {hovered && !dropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                            className="absolute right-0 top-12 w-64 bg-white dark:bg-zinc-900 border border-black/[0.06] dark:border-white/[0.08] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-5 z-50 pointer-events-none"
+                          >
+                            <div className="flex items-center gap-3 mb-3">
+                              <Avatar className="w-10 h-10">
+                                <AvatarImage src={user.photoUrl} />
+                                <AvatarFallback className="bg-blue-600 text-white text-sm font-bold">
+                                  {user.firstName?.[0] || 'U'}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                                  {user?.firstName || 'Qspace'} {user?.lastName || ''}
+                                </p>
+                                <p className="text-xs text-gray-400 dark:text-zinc-500 truncate max-w-[180px]">
+                                  {user.email}
+                                </p>
+                              </div>
+                            </div>
+                            {user.email === 'futurekgomotso@gmail.com' && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-white bg-gradient-to-r from-amber-400 to-orange-500 px-2.5 py-1 rounded-full">
+                                Admin <FaCheckCircle size={10} />
+                              </span>
+                            )}
+                          </motion.div>
                         )}
-                      </div>
+                      </AnimatePresence>
+                    </div>
 
-                      {/* Menu Items */}
-                      <div className="p-2 space-y-0.5">
-                        <DropdownItem
-                          icon={User}
-                          label="Profile"
-                          onClick={() => { navigate('/dashboard/profile'); setDropdownOpen(false); }}
-                        />
-                        <DropdownItem
-                          icon={BarChart3}
-                          label="Your Blog"
-                          onClick={() => { navigate('/dashboard/your-blog'); setDropdownOpen(false); }}
-                        />
-                        <DropdownItem
-                          icon={MessageSquareText}
-                          label="Comments"
-                          onClick={() => { navigate('/dashboard/comments'); setDropdownOpen(false); }}
-                        />
-                        <DropdownItem
-                          icon={PenLine}
-                          label="Write Blog"
-                          onClick={() => { navigate('/dashboard/write-blog'); setDropdownOpen(false); }}
-                        />
-                      </div>
+                    <DropdownMenuContent
+                      align="end"
+                      sideOffset={8}
+                      className="w-64 p-2 bg-white dark:bg-zinc-900 border border-black/[0.06] dark:border-white/[0.08] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)]"
+                    >
+                      <DropdownMenuLabel className="flex items-center gap-2 px-3 py-2.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-blue-500 via-emerald-500 to-amber-500">
+                        {user.email === 'futurekgomotso@gmail.com' ? (
+                          <>Admin <FaCheckCircle size={14} /></>
+                        ) : (
+                          'My Account'
+                        )}
+                      </DropdownMenuLabel>
 
-                      <div className="h-px bg-gray-100 dark:bg-gray-700 mx-2" />
+                      <DropdownMenuSeparator className="my-1.5 bg-black/[0.06] dark:bg-white/[0.06]" />
 
-                      <div className="p-2 space-y-0.5">
-                        <DropdownItem
-                          icon={Settings}
-                          label="Settings"
-                          onClick={() => { navigate('/dashboard/settings'); setDropdownOpen(false); }}
-                        />
-                        <DropdownItem
-                          icon={LogOut}
-                          label="Log out"
-                          danger
-                          onClick={() => { logoutHandler(); setDropdownOpen(false); }}
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link to="/login">
+                      <DropdownMenuGroup className="space-y-0.5">
+                        <DropdownMenuItem
+                          onClick={() => { navigate('/dashboard/profile'); setDropdownOpen(false) }}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-zinc-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors"
+                        >
+                          <User size={16} className="text-blue-500" />
+                          <span>Profile</span>
+                          <DropdownMenuShortcut className="text-xs text-gray-400">⇧⌘P</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => { navigate('/dashboard/your-blog'); setDropdownOpen(false) }}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-zinc-300 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer transition-colors"
+                        >
+                          <BarChart3 size={16} className="text-emerald-500" />
+                          <span>Your Blog</span>
+                          <DropdownMenuShortcut className="text-xs text-gray-400">⌘B</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => { navigate('/dashboard/comments'); setDropdownOpen(false) }}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-zinc-300 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer transition-colors"
+                        >
+                          <MessageSquareText size={16} className="text-amber-500" />
+                          <span>Comments</span>
+                          <DropdownMenuShortcut className="text-xs text-gray-400">⌘C</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => { navigate('/dashboard/write-blog'); setDropdownOpen(false) }}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-zinc-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors"
+                        >
+                          <PenLine size={16} className="text-blue-500" />
+                          <span>Write Blog</span>
+                          <DropdownMenuShortcut className="text-xs text-gray-400">⌘W</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+
+                      <DropdownMenuSeparator className="my-1.5 bg-black/[0.06] dark:bg-white/[0.06]" />
+
+                      <DropdownMenuItem
+                        onClick={logoutHandler}
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 cursor-pointer transition-colors"
+                      >
+                        <LogOut size={16} />
+                        <span>Log out</span>
+                        <DropdownMenuShortcut className="text-xs text-gray-400">⇧⌘Q</DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ) : (
+                <Link to="/login" className="ml-2">
                   <Button
-                    variant="ghost"
-                    className="h-9 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+                    variant="outline"
+                    className="h-9 px-5 rounded-full border-black/10 dark:border-white/10 bg-transparent hover:bg-black/[0.03] dark:hover:bg-white/[0.03] text-sm font-medium gap-2"
                   >
-                    Log in
+                    <FaSignInAlt size={14} />
+                    <span className="hidden sm:inline">Login</span>
                   </Button>
                 </Link>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-
-        {/* ─── Mobile Search (visible only on small screens) ──────── */}
-        <div className="md:hidden px-4 pb-3">
-          <form onSubmit={handleSearch} className="relative">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-full text-sm"
-            />
-          </form>
         </div>
       </header>
 
-      {/* Spacer for fixed header */}
-      <div className="h-16 md:h-16" />
+      {/* Tooltips */}
+      <Tooltip id="nav-tooltip" className="z-[60]" />
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       <ResponsiveMenu openNav={openNav} setOpenNav={setOpenNav} logoutHandler={logoutHandler} />
+
+      {/* Spacer for fixed header */}
+      <div className="h-[60px]" />
     </>
-  );
-};
+  )
+}
 
-// ─── Dropdown Item Component ───────────────────────────────────────
-const DropdownItem = ({ icon: Icon, label, onClick, danger = false }) => (
-  <button
-    onClick={onClick}
-    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
-      ${danger
-        ? 'text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10'
-        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
-      }`}
-  >
-    <Icon size={16} className={danger ? 'text-red-500' : 'text-gray-400'} />
-    {label}
-  </button>
-);
-
-export default Navbar;
+export default Navbar
