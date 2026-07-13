@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import userLogo from '../assets/user.jpg';
-import { Sparkles, Send, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const PopularAuthors = () => {
   const [popularUser, setPopularUser] = useState([]);
-  const [showAuthors, setShowAuthors] = useState(false);
+  const [showAuthors, setShowAuthors] = useState(true);
 
   const getAllUsers = async () => {
     try {
@@ -22,45 +22,47 @@ const PopularAuthors = () => {
     getAllUsers();
   }, []);
 
+  const displayedUsers = popularUser?.slice(0, 8) || [];
+  const remaining = popularUser?.length > 8 ? popularUser.length - 8 : 0;
+
   return (
-    <section className="bg-white dark:bg-gray-900 px-4 py-8 rounded-xl">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <Sparkles className="text-[#1E90FF]" />
+    <section className="px-4 py-3">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
           Popular Authors
-        </h2>
+        </span>
         <button
           onClick={() => setShowAuthors(!showAuthors)}
-          className="text-sm text-[#1E90FF] hover:text-blue-700 flex items-center gap-1"
+          className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-zinc-500 dark:hover:text-zinc-300 dark:hover:bg-zinc-800 transition-all"
         >
-          {showAuthors ? <EyeOff size={18} /> : <Eye size={18} />}
+          {showAuthors ? <EyeOff size={13} /> : <Eye size={13} />}
           {showAuthors ? 'Hide' : 'Show'}
         </button>
       </div>
 
+      {/* Avatars Row */}
       {showAuthors && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 transition-all">
-          {popularUser?.slice(0, 6).map((user, index) => (
-            <div
-              key={index}
-              className="bg-gradient-to-br from-blue-600 to-green-500 p-[1px] rounded-lg hover:scale-105 transition-all"
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-3 text-center shadow-md">
-                <img
-                  src={user.photoUrl || userLogo}
-                  alt={`${user.firstName} ${user.lastName}`}
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover mx-auto border-2 border-[#FFD700]"
-                />
-                <h4 className="mt-2 text-sm font-semibold text-gray-800 dark:text-white truncate">
-                  {user.firstName} {user.lastName}
-                </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">@{user.username || 'quorvex_author'}</p>
-                <button className="mt-2 w-full bg-[#1E90FF] text-white py-1 rounded-full text-xs hover:bg-blue-700 transition">
-                  Follow
-                </button>
+        <div className="flex items-center flex-wrap gap-1.5">
+          {displayedUsers.map((user, index) => (
+            <div key={index} className="group relative">
+              <img
+                src={user.photoUrl || userLogo}
+                alt={`${user.firstName} ${user.lastName}`}
+                className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 dark:border-zinc-700 cursor-pointer transition-all duration-200 group-hover:border-blue-500 group-hover:scale-110 group-hover:shadow-[0_0_0_3px_rgba(37,99,235,0.15)]"
+              />
+              {/* Tooltip */}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-gray-900 dark:bg-zinc-800 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 whitespace-nowrap z-50 scale-95 group-hover:scale-100">
+                {user.firstName} {user.lastName}
+                <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-zinc-800" />
               </div>
             </div>
           ))}
+          {remaining > 0 && (
+            <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-zinc-800 border-2 border-dashed border-gray-300 dark:border-zinc-600 flex items-center justify-center text-xs font-semibold text-gray-500 dark:text-zinc-400 cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all">
+              +{remaining}
+            </div>
+          )}
         </div>
       )}
     </section>
