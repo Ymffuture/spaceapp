@@ -1,116 +1,149 @@
-import React from 'react'
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Button } from './ui/button';
 import {
-  FaUserCircle, FaFacebook, FaInstagram, FaTwitter, FaGithub,
-  FaChevronRight, FaHome, FaBlog, FaInfoCircle, FaCrown
-} from 'react-icons/fa'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { Button } from './ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+  Home,
+  BookOpen,
+  Info,
+  PenLine,
+  LogOut,
+  User,
+  X,
+  Facebook,
+  Instagram,
+  Twitter,
+  Github,
+} from 'lucide-react';
 
 const ResponsiveMenu = ({ openNav, setOpenNav, logoutHandler }) => {
-  const { user } = useSelector(store => store.auth)
+  const { user } = useSelector(store => store.auth);
+  const navigate = useNavigate();
+
+  const navItems = [
+    { to: '/', icon: Home, label: 'Home' },
+    { to: '/blogs', icon: BookOpen, label: 'Blog' },
+    { to: '/about', icon: Info, label: 'About' },
+    { to: '/dashboard/write-blog', icon: PenLine, label: 'Write a Blog' },
+  ];
+
+  const socialLinks = [
+    { href: 'https://facebook.com', icon: Facebook, label: 'Facebook', color: 'hover:bg-blue-600 hover:text-white' },
+    { href: 'https://instagram.com', icon: Instagram, label: 'Instagram', color: 'hover:bg-pink-600 hover:text-white' },
+    { href: 'https://twitter.com', icon: Twitter, label: 'Twitter', color: 'hover:bg-sky-500 hover:text-white' },
+    { href: 'https://github.com', icon: Github, label: 'GitHub', color: 'hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900' },
+  ];
 
   return (
-    <div
-      className={`
-        ${openNav ? "left-0" : "-left-full"}
-        fixed top-0 bottom-0 z-50 h-[100%] w-[80%] sm:w-[50%] lg:w-[20%]
-        flex flex-col justify-between px-6 pt-12 pb-6
-        bg-gradient-to-br from-[#F0F8FF] via-white to-blue-50 dark:from-gray-900 dark:to-gray-800
-        text-black dark:text-white shadow-2xl
-        rounded-r-3xl transition-all duration-300 ease-in-out
-      `}
-    >
-      {/* Header / Profile */}
-      <div>
-        <div className="flex items-center gap-4">
-          {user ? (
-            <Avatar className="h-14 w-14 shadow-xl ring-4 ring-[#1E90FF]">
-              <AvatarImage src={user.photoUrl} />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-          ) : (
-            <FaUserCircle className="h-14 w-14 text-[#1E90FF]" />
-          )}
+    <>
+      {/* Overlay */}
+      <div
+        className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-50 transition-opacity duration-300 ${openNav ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setOpenNav(false)}
+      />
 
-          <div className='relative'>
-            <h1 className="text-lg font-bold">Hello, {user?.firstName || "Guest"}</h1>
-            
+      {/* Drawer */}
+      <div
+        className={`fixed top-0 bottom-0 left-0 w-[85%] max-w-[340px] bg-white dark:bg-[#0f0f0f] z-[51] flex flex-col shadow-[0_25px_50px_-12px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${openNav ? 'translate-x-0' : '-translate-x-full'}`}
+      >
+        {/* ─── Header / Profile ───────────────────────────────── */}
+        <div className="px-6 pt-8 pb-6 border-b border-gray-100 dark:border-zinc-800">
+          <div className="flex items-center gap-4">
+            {user ? (
+              <Avatar className="w-14 h-14 border-[3px] border-blue-100 dark:border-blue-500/20 shadow-sm">
+                <AvatarImage src={user.photoUrl} />
+                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-700 text-white text-lg font-bold">
+                  {user.firstName?.[0] || 'U'}
+                </AvatarFallback>
+              </Avatar>
+            ) : (
+              <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center">
+                <User size={28} className="text-gray-400" />
+              </div>
+            )}
+            <div>
+              <h2 className="text-base font-bold text-gray-900 dark:text-white">
+                Hello, {user?.firstName || 'Guest'}
+              </h2>
+              {user && (
+                <p className="text-xs text-gray-400 dark:text-zinc-500 mt-0.5 truncate max-w-[180px]">
+                  {user.email}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="mt-10">
-          <ul className="flex flex-col gap-5 text-[14px] tracking-wide">
-            <Link to="/" onClick={() => setOpenNav(false)}>
-              <li className="flex items-center gap-2 hover:text-[#1E90FF] transition-all duration-200">
-                <FaHome /> Home
-              </li>
+        {/* ─── Navigation ─────────────────────────────────────── */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          {navItems.map(({ to, icon: Icon, label }) => (
+            <Link
+              key={to}
+              to={to}
+              onClick={() => setOpenNav(false)}
+              className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-[15px] font-medium text-gray-600 dark:text-zinc-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-150"
+            >
+              <Icon size={19} strokeWidth={2} />
+              {label}
             </Link>
-            <Link to="/blogs" onClick={() => setOpenNav(false)}>
-              <li className="flex items-center gap-2 hover:text-[#1E90FF] transition-all duration-200">
-                <FaBlog /> Blog
-              </li>
-            </Link>
-            <Link to="/about" onClick={() => setOpenNav(false)}>
-              <li className="flex items-center gap-2 hover:text-[#1E90FF] transition-all duration-200">
-                <FaInfoCircle /> About
-              </li>
-            </Link>
+          ))}
 
-            {user ? (
-              <Button
-                variant="glow"
-                className="mt-6 w-full bg-[#32CD32] text-white hover:bg-green-700 transition"
-                onClick={() => {
-                  logoutHandler()
-                  setOpenNav(false)
-                }}
-              >
-                Logout
+          {/* CTA Button */}
+          {user ? (
+            <button
+              onClick={() => {
+                logoutHandler();
+                setOpenNav(false);
+              }}
+              className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-[15px] font-semibold hover:bg-red-100 dark:hover:bg-red-500/20 transition-all"
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setOpenNav(false)}
+              className="block mt-4"
+            >
+              <Button className="w-full h-11 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[15px] shadow-lg shadow-blue-500/20">
+                Get Started
               </Button>
-            ) : (
-              <Link to="/signup" onClick={() => setOpenNav(false)}>
-                <Button className="mt-6 w-full bg-[#1E90FF] text-white hover:bg-blue-700 transition">
-                  Signup
-                </Button>
-              </Link>
-            )}
-          </ul>
+            </Link>
+          )}
         </nav>
-      </div>
 
-      {/* Footer Social Icons + Close */}
-      <div className="flex flex-col items-center">
-        <div className="flex space-x-6 mt-6">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-            <FaFacebook className="text-[#1E90FF] hover:text-blue-700 text-2xl transition transform hover:scale-110" />
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-            <FaInstagram className="text-pink-600 hover:text-pink-800 text-2xl transition transform hover:scale-110" />
-          </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <FaTwitter className="text-sky-500 hover:text-sky-700 text-2xl transition transform hover:scale-110" />
-          </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <FaGithub className="text-gray-800 dark:text-white hover:text-black text-2xl transition transform hover:scale-110" />
-          </a>
-        </div>
+        {/* ─── Footer ─────────────────────────────────────────── */}
+        <div className="px-6 py-5 border-t border-gray-100 dark:border-zinc-800">
+          {/* Social Icons */}
+          <div className="flex justify-center gap-3 mb-5">
+            {socialLinks.map(({ href, icon: Icon, label, color }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className={`w-10 h-10 rounded-xl bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 flex items-center justify-center transition-all duration-200 ${color} hover:-translate-y-0.5`}
+              >
+                <Icon size={17} />
+              </a>
+            ))}
+          </div>
 
-        {/* Close Button */}
-        <div className="mt-10">
+          {/* Close Button */}
           <button
             onClick={() => setOpenNav(false)}
-            className="p-3 rounded-full bg-[#FFD700] hover:bg-yellow-400 dark:bg-gray-700 dark:hover:bg-gray-600 transition"
-            title="Close Menu"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 dark:border-zinc-700 text-sm font-medium text-gray-500 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-gray-700 dark:hover:text-zinc-200 transition-all"
           >
-            <FaChevronRight size={20} />
+            <X size={16} />
+            Close Menu
           </button>
         </div>
       </div>
-    </div>
-  )
-}
+    </>
+  );
+};
 
-export default ResponsiveMenu
+export default ResponsiveMenu;
