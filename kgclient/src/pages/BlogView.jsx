@@ -3,7 +3,14 @@ import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ThumbsUp, ThumbsDown, MessageSquare, Bookmark, Share2, Clock, Calendar } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, MessageSquare, Bookmark, Share2, Clock, Calendar, Link2, Facebook } from 'lucide-react';
+import { FaWhatsapp, FaXTwitter } from 'react-icons/fa6';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import CommentBox from '@/components/CommentBox';
 import axios from 'axios';
 import { setBlog, upsertBlog } from '@/redux/blogSlice';
@@ -12,6 +19,9 @@ import { Helmet } from 'react-helmet';
 import io from 'socket.io-client';
 
 const socket = io('https://kgserver-bjy2.onrender.com');
+const SITE_URL = 'https://qspaceblog.vercel.app';
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.jpg`;
+const stripHtml = (str = '') => String(str).replace(/<[^>]*>/g, '').trim();
 
 const BlogView = () => {
   const { blogId } = useParams();
@@ -101,12 +111,14 @@ const BlogView = () => {
   };
 
   const handleLike = useCallback(() => {
+    if (!user) return toast.error('Sign in to like this post');
     liked ? toggleReaction('unlike') : toggleReaction('like');
-  }, [liked]);
+  }, [liked, user]);
 
   const handleDislike = useCallback(() => {
+    if (!user) return toast.error('Sign in to dislike this post');
     disliked ? toggleReaction('undislike') : toggleReaction('dislike');
-  }, [disliked]);
+  }, [disliked, user]);
 
   const changeTimeFormat = (isoDate) => {
     const date = new Date(isoDate);
@@ -117,15 +129,18 @@ const BlogView = () => {
     });
   };
 
-  const handleShare = useCallback(() => {
-    const url = `${window.location.origin}/blogs/${blogId}`;
-    if (navigator.share) {
-      navigator.share({ title: selectedBlog?.title || 'Check out this blog!', url });
-    } else {
-      navigator.clipboard.writeText(url);
-      toast.success('Link copied to clipboard!');
-    }
-  }, [blogId, selectedBlog]);
+  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : SITE_URL}/blogs/${blogId}`;
+  const shareTitle = selectedBlog?.title || 'Check out this blog!';
+  const shareText = encodeURIComponent(shareTitle);
+
+  const handleNativeShare = useCallback(() => {
+    navigator.share({ title: shareTitle, text: selectedBlog?.subtitle || '', url: shareUrl });
+  }, [shareUrl, shareTitle, selectedBlog]);
+
+  const copyLink = useCallback(() => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success('Link copied to clipboard!');
+  }, [shareUrl]);
 
   const estimateReadTime = (htmlContent) => {
     if (!htmlContent) return 5;
@@ -169,12 +184,32 @@ const BlogView = () => {
 
   const readTime = estimateReadTime(selectedBlog.description);
   const tags = selectedBlog.tags || ['Next.js', 'React', 'Web Dev', 'JavaScript'];
+  const ogDescription = stripHtml(selectedBlog.subtitle || selectedBlog.description || '').slice(0, 200);
+  const ogImage = selectedBlog.thumbnail || DEFAULT_OG_IMAGE;
 
   return (
     <>
       <Helmet>
-        <title>{selectedBlog?.title || 'Blog'} | Qspace</title>
-        <meta name="description" content={selectedBlog?.subtitle || ''} />
+        <title>{selectedBlog.title} | Qspace Blog</title>
+        <meta name="description" content={ogDescription} />
+        <link rel="canonical" href={shareUrl} />
+
+        {/* Open Graph — note: Facebook/WhatsApp crawlers don't run JS, so
+            these tags only help in-app browsers + SEO. Actual crawler
+            previews are served by api/share/[blogId].js via vercel.json */}
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="Qspace Blog" />
+        <meta property="og:title" content={selectedBlog.title} />
+        <meta property="og:description" content={ogDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:url" content={shareUrl} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={selectedBlog.title} />
+        <meta name="twitter:description" content={ogDescription} />
+        <meta name="twitter:image" content={ogImage} />
       </Helmet>
 
       {/* Scroll Progress Bar */}
@@ -220,7 +255,7 @@ const BlogView = () => {
           <div className="flex items-center justify-between flex-wrap gap-4 py-6 my-8 border-y border-gray-100 dark:border-zinc-800/80">
             <div className="flex items-center gap-3.5">
               <Avatar className="w-12 h-12 border-2 border-gray-100 dark:border-zinc-700 shadow-sm">
-                <AvatarImage src={selectedBlog?.author?.photoUrl || '/default-avatar.png'} />
+                <AvatarImage src={selectedBlog?.author?.photoUrl} />
                 <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-700 text-white font-semibold text-sm">
                   {selectedBlog?.author?.firstName?.[0] || 'U'}
                 </AvatarFallback>
@@ -248,19 +283,22 @@ const BlogView = () => {
           </div>
 
           {/* ─── Featured Image ─────────────────────────────────── */}
-          <div className="relative rounded-2xl overflow-hidden mb-12 shadow-lg group">
-            <img
-              src={selectedBlog.thumbnail}
-              alt={selectedBlog.title}
-              className="w-full h-auto max-h-[500px] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-              loading="eager"
-            />
-            {selectedBlog.imageCaption && (
-              <div className="absolute bottom-0 left-0 right-0 px-6 py-5 bg-gradient-to-t from-black/60 to-transparent">
-                <p className="text-white/80 text-sm italic">{selectedBlog.imageCaption}</p>
-              </div>
-            )}
-          </div>
+          {selectedBlog.thumbnail && (
+            <div className="relative rounded-2xl overflow-hidden mb-12 shadow-lg group">
+              <img
+                src={selectedBlog.thumbnail}
+                alt={selectedBlog.title}
+                className="w-full h-auto max-h-[500px] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                loading="eager"
+                onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }}
+              />
+              {selectedBlog.imageCaption && (
+                <div className="absolute bottom-0 left-0 right-0 px-6 py-5 bg-gradient-to-t from-black/60 to-transparent">
+                  <p className="text-white/80 text-sm italic">{selectedBlog.imageCaption}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* ─── Article Content ─────────────────────────────────── */}
           <article className="prose dark:prose-invert prose-lg max-w-none font-serif leading-[1.8] text-[#1a1a1a] dark:text-[#e4e4e7]">
@@ -347,12 +385,61 @@ const BlogView = () => {
               </button>
 
               {/* Share */}
-              <button
-                onClick={handleShare}
-                className="p-2.5 rounded-full text-gray-500 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-800 dark:hover:text-zinc-200 transition-all duration-200"
-              >
-                <Share2 size={17} />
-              </button>
+              {typeof navigator !== 'undefined' && navigator.share ? (
+                <button
+                  onClick={handleNativeShare}
+                  className="p-2.5 rounded-full text-gray-500 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-800 dark:hover:text-zinc-200 transition-all duration-200"
+                >
+                  <Share2 size={17} />
+                </button>
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-2.5 rounded-full text-gray-500 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-800 dark:hover:text-zinc-200 transition-all duration-200">
+                      <Share2 size={17} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <a
+                        href={`https://wa.me/?text=${shareText}%20${encodeURIComponent(shareUrl)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <FaWhatsapp className="text-green-600" size={16} />
+                        WhatsApp
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a
+                        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <Facebook className="text-blue-600" size={16} />
+                        Facebook
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a
+                        href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <FaXTwitter size={16} />
+                        X (Twitter)
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={copyLink} className="flex items-center gap-2 cursor-pointer">
+                      <Link2 size={16} />
+                      Copy link
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </div>
 
