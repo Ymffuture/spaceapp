@@ -2,10 +2,36 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#1E90FF" />
     <meta name="google-site-verification" content="xXWElQQdEb1YSMqAy524N-B58KqSZqsf5zc0O8fWg3A" />
-    <meta name="description" content="Default site description" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Apple PWA support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Qspace" />
+
+    <title>Qspace Blog | Tech, Coding & Career Articles</title>
+    <meta name="description" content="Read our latest tech, coding, and career articles." />
+
+    <!-- Open Graph fallback (used by pages other than /blogs/:id, which get
+         dynamic tags from the api/share serverless function instead) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Qspace Blog" />
+    <meta property="og:title" content="Qspace Blog | Tech, Coding & Career Articles" />
+    <meta property="og:description" content="Read our latest tech, coding, and career articles." />
+    <meta property="og:image" content="https://qspaceblog.vercel.app/og-default.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://qspaceblog.vercel.app" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Qspace Blog | Tech, Coding & Career Articles" />
+    <meta name="twitter:description" content="Read our latest tech, coding, and career articles." />
+    <meta name="twitter:image" content="https://qspaceblog.vercel.app/og-default.jpg" />
   </head>
   <body>
     <div id="root"></div>
