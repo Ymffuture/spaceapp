@@ -16,9 +16,8 @@ import axios from 'axios';
 import { setBlog, upsertBlog } from '@/redux/blogSlice';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet';
-import io from 'socket.io-client';
 
-const socket = io('https://kgserver-bjy2.onrender.com');
+import socket from '@/lib/socket';
 const SITE_URL = 'https://qspaceblog.vercel.app';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.jpg`;
 const stripHtml = (str = '') => String(str).replace(/<[^>]*>/g, '').trim();
