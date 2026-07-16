@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet'
@@ -162,9 +162,16 @@ const Profile = () => {
     { label: 'Views', value: '8.5k', icon: Eye, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
   ]
 
-  const profileImage = typeof input.file === 'object'
-    ? URL.createObjectURL(input.file)
-    : (user?.photoUrl || userLogo)
+  const profileImage = useMemo(() => {
+    if (input.file instanceof File) return URL.createObjectURL(input.file)
+    return user?.photoUrl || userLogo
+  }, [input.file, user?.photoUrl])
+
+  useEffect(() => {
+    return () => {
+      if (input.file instanceof File) URL.revokeObjectURL(profileImage)
+    }
+  }, [profileImage])
 
   const fullName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'
 
