@@ -1,6 +1,5 @@
 // CommentBox.jsx (PREMIUM REDESIGN + moderation + mentions)
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import io from 'socket.io-client';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
@@ -31,7 +30,7 @@ import { setComment } from '@/redux/commentSlice';
 import CommentSkeleton from './CommentSkeleton';
 import TimeAgo from './TimeAgo';
 
-const socket = io("https://kgserver-bjy2.onrender.com");
+import socket from '@/lib/socket';
 const API = "https://kgserver-bjy2.onrender.com/api/v1";
 
 // Matches the mention syntax we insert into the textarea: [@Name](mention:USER_ID)

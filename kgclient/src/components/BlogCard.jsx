@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
+import axios from 'axios'
+import { toast } from 'sonner'
 import {
   Clock,
   ArrowRight,
@@ -13,10 +16,69 @@ import {
   MoreHorizontal,
 } from 'lucide-react'
 
+const API = 'https://kgserver-bjy2.onrender.com/api/v1'
+
 const BlogCard = ({ blog, featured = false, horizontal = false }) => {
   const navigate = useNavigate()
+  const { user } = useSelector(store => store.auth)
   const [isHovered, setIsHovered] = useState(false)
   const [timeAgo, setTimeAgo] = useState('')
+  const [liked, setLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(blog.likes?.length || 0)
+  const [liking, setLiking] = useState(false)
+  const commentCount = blog.comments?.length || 0
+
+  useEffect(() => {
+    if (user && Array.isArray(blog.likes)) {
+      setLiked(blog.likes.some(id => (id?._id || id) === user._id))
+    }
+  }, [user, blog.likes])
+
+  const handleLike = async (e) => {
+    e.stopPropagation()
+    if (!user) return toast.error('Sign in to like posts')
+    if (liking) return
+    setLiking(true)
+
+    // optimistic update
+    const wasLiked = liked
+    setLiked(!wasLiked)
+    setLikeCount(c => wasLiked ? Math.max(0, c - 1) : c + 1)
+
+    try {
+      const res = await axios.post(
+        `${API}/blog/${blog._id}/${wasLiked ? 'unlike' : 'like'}`,
+        {},
+        { withCredentials: true }
+      )
+      if (res.data.success && res.data.blog) {
+        setLikeCount(res.data.blog.likes?.length ?? likeCount)
+      }
+    } catch (err) {
+      // roll back on failure
+      setLiked(wasLiked)
+      setLikeCount(c => wasLiked ? c + 1 : Math.max(0, c - 1))
+      toast.error(err.response?.data?.message || 'Reaction failed')
+    } finally {
+      setLiking(false)
+    }
+  }
+
+  const handleComment = (e) => {
+    e.stopPropagation()
+    navigate(`/blogs/${blog._id}`)
+  }
+
+  const handleShare = (e) => {
+    e.stopPropagation()
+    const url = `${window.location.origin}/blogs/${blog._id}`
+    if (navigator.share) {
+      navigator.share({ title: blog.title, url }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(url)
+      toast.success('Link copied to clipboard!')
+    }
+  }
 
   const readTime = useMemo(() => {
     if (!blog.description) return '5 min'
@@ -164,19 +226,25 @@ const BlogCard = ({ blog, featured = false, horizontal = false }) => {
 
               <div className="flex items-center gap-2 text-[#7a6f63] dark:text-[#b7ada4]">
                 <button
-                  onClick={(e) => e.stopPropagation()}
-                  className="grid h-9 w-9 place-items-center rounded-full bg-[#f4efe7] transition-colors hover:bg-[#e9dfd3] dark:bg-[#23201d] dark:hover:bg-[#2b2623]"
+                  onClick={handleLike}
+                  className={`flex items-center gap-1.5 h-9 px-3 rounded-full transition-colors ${
+                    liked
+                      ? 'bg-[#d97757]/15 text-[#d97757]'
+                      : 'bg-[#f4efe7] hover:bg-[#e9dfd3] dark:bg-[#23201d] dark:hover:bg-[#2b2623]'
+                  }`}
                 >
-                  <ThumbsUp size={15} />
+                  <ThumbsUp size={15} className={liked ? 'fill-[#d97757]' : ''} />
+                  <span className="text-xs font-semibold tabular-nums">{likeCount}</span>
                 </button>
                 <button
-                  onClick={(e) => e.stopPropagation()}
-                  className="grid h-9 w-9 place-items-center rounded-full bg-[#f4efe7] transition-colors hover:bg-[#e9dfd3] dark:bg-[#23201d] dark:hover:bg-[#2b2623]"
+                  onClick={handleComment}
+                  className="flex items-center gap-1.5 h-9 px-3 rounded-full bg-[#f4efe7] transition-colors hover:bg-[#e9dfd3] dark:bg-[#23201d] dark:hover:bg-[#2b2623]"
                 >
                   <MessageCircle size={15} />
+                  <span className="text-xs font-semibold tabular-nums">{commentCount}</span>
                 </button>
                 <button
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={handleShare}
                   className="grid h-9 w-9 place-items-center rounded-full bg-[#f4efe7] transition-colors hover:bg-[#e9dfd3] dark:bg-[#23201d] dark:hover:bg-[#2b2623]"
                 >
                   <Share2 size={15} />
