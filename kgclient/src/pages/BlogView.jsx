@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -38,6 +38,17 @@ const BlogView = () => {
   const [loading, setLoading] = useState(true);
   const [markedRead, setMarkedRead] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [articleExpanded, setArticleExpanded] = useState(false);
+  const [isLongArticle, setIsLongArticle] = useState(false);
+  const articleRef = useRef(null);
+
+  const LONG_ARTICLE_THRESHOLD = 900; // px
+
+  useEffect(() => {
+    if (articleRef.current) {
+      setIsLongArticle(articleRef.current.scrollHeight > LONG_ARTICLE_THRESHOLD);
+    }
+  }, [selectedBlog?.description]);
 
   // Scroll progress tracking
   useEffect(() => {
@@ -302,17 +313,39 @@ const BlogView = () => {
 
           {/* ─── Article Content ─────────────────────────────────── */}
           <article className="prose dark:prose-invert prose-lg max-w-none font-serif leading-[1.8] text-[#1a1a1a] dark:text-[#e4e4e7]">
-            <div
-              className="[&_p]:mb-6 [&_h2]:font-sans [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:tracking-tight
-                         [&_h3]:font-sans [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3
-                         [&_blockquote]:border-l-4 [&_blockquote]:border-blue-500 [&_blockquote]:pl-6 [&_blockquote]:my-8
-                         [&_blockquote]:italic [&_blockquote]:text-gray-500 dark:[&_blockquote]:text-zinc-400
-                         [&_a]:text-blue-600 dark:[&_a]:text-blue-400 [&_a]:underline [&_a]:underline-offset-4
-                         [&_ul]:my-6 [&_ul]:pl-6 [&_ol]:my-6 [&_ol]:pl-6 [&_li]:mb-2
-                         [&_pre]:bg-[#1e293b] [&_pre]:text-gray-100 [&_pre]:p-5 [&_pre]:rounded-lg [&_pre]:overflow-x-auto
-                         [&_code]:bg-gray-100 dark:[&_code]:bg-zinc-800 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm"
-              dangerouslySetInnerHTML={{ __html: selectedBlog.description }}
-            />
+            <div className="relative">
+              <div
+                ref={articleRef}
+                className={`[&_p]:mb-6 [&_h2]:font-sans [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:tracking-tight
+                           [&_h3]:font-sans [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3
+                           [&_blockquote]:border-l-4 [&_blockquote]:border-blue-500 [&_blockquote]:pl-6 [&_blockquote]:my-8
+                           [&_blockquote]:italic [&_blockquote]:text-gray-500 dark:[&_blockquote]:text-zinc-400
+                           [&_a]:text-blue-600 dark:[&_a]:text-blue-400 [&_a]:underline [&_a]:underline-offset-4
+                           [&_ul]:my-6 [&_ul]:pl-6 [&_ol]:my-6 [&_ol]:pl-6 [&_li]:mb-2
+                           [&_pre]:bg-[#1e293b] [&_pre]:text-gray-100 [&_pre]:p-5 [&_pre]:rounded-lg [&_pre]:overflow-x-auto
+                           [&_code]:bg-gray-100 dark:[&_code]:bg-zinc-800 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm
+                           [&_table]:w-full [&_table]:my-6 [&_table]:border-collapse [&_table]:text-base [&_table]:font-sans
+                           [&_th]:border [&_th]:border-gray-200 dark:[&_th]:border-zinc-700 [&_th]:bg-gray-50 dark:[&_th]:bg-zinc-800/60 [&_th]:px-4 [&_th]:py-2.5 [&_th]:text-left [&_th]:font-semibold
+                           [&_td]:border [&_td]:border-gray-200 dark:[&_td]:border-zinc-700 [&_td]:px-4 [&_td]:py-2.5
+                           [&_img]:rounded-xl [&_img]:my-6
+                           ${isLongArticle && !articleExpanded ? 'max-h-[65vh] overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent' : ''}`}
+                dangerouslySetInnerHTML={{ __html: selectedBlog.description }}
+              />
+              {isLongArticle && !articleExpanded && (
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#fafafa] dark:from-[#0f0f0f] to-transparent pointer-events-none rounded-b-lg" />
+              )}
+            </div>
+
+            {isLongArticle && (
+              <div className="flex justify-center not-prose mt-2">
+                <button
+                  onClick={() => setArticleExpanded((v) => !v)}
+                  className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline px-4 py-2 transition-colors"
+                >
+                  {articleExpanded ? 'Show less ↑' : 'Continue reading in full ↓'}
+                </button>
+              </div>
+            )}
           </article>
 
           {/* ─── Tags ───────────────────────────────────────────── */}
