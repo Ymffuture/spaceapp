@@ -75,6 +75,52 @@ const Navbar = () => {
     setOpenNav(false)
   }, [location.pathname])
 
+  // ─── Edge-swipe right to open the mobile menu ─────────────────
+  // Starting a touch near the left edge of the screen and swiping right
+  // opens the drawer, the same gesture pattern as most native apps.
+  useEffect(() => {
+    const EDGE_ZONE = 24;      // px from the left edge a swipe must start within
+    const SWIPE_THRESHOLD = 60; // px of horizontal travel to count as a swipe
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+
+    const onTouchStart = (e) => {
+      const touch = e.touches[0];
+      if (touch.clientX <= EDGE_ZONE && !openNav) {
+        startX = touch.clientX;
+        startY = touch.clientY;
+        tracking = true;
+      } else {
+        tracking = false;
+      }
+    };
+
+    const onTouchMove = (e) => {
+      if (!tracking) return;
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - startX;
+      const deltaY = Math.abs(touch.clientY - startY);
+      // Require a mostly-horizontal swipe so vertical scrolling near the
+      // edge doesn't accidentally trigger the menu.
+      if (deltaX > SWIPE_THRESHOLD && deltaX > deltaY * 1.5) {
+        setOpenNav(true);
+        tracking = false;
+      }
+    };
+
+    const onTouchEnd = () => { tracking = false; };
+
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [openNav]);
+
   // ─── Logout ──────────────────────────────────────────────────
   const logoutHandler = async () => {
     try {
