@@ -26,7 +26,7 @@ const PopularAuthors = () => {
   const remaining = popularUser?.length > 8 ? popularUser.length - 8 : 0
 
   return (
-    <section className="rounded-[24px] border border-[#ded4c7] bg-[#f4f3ee] px-4 py-4 shadow-[0_8px_30px_rgba(20,20,19,0.05)] dark:border-[#2b2623] dark:bg-[#141413]">
+    <section className="rounded-[0px] border border-[#ded4c7] bg-[#f4f3ee] px-4 py-4 shadow-[0_8px_30px_rgba(20,20,19,0.05)] dark:border-[#2b2623] dark:bg-[#141413]">
       <div className="mb-3 flex items-center justify-between">
         <div>
           <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8a847a] dark:text-[#8f857c]">
