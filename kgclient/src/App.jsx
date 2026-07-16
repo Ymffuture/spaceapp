@@ -6,6 +6,9 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AnimatedVisionLogo from './components/AnimatedVisionLogo' // Custom loader
 import NotFound from './pages/NotFound';
 import ErrorPage from './pages/ErrorPage';
+import AdminRoute from './components/AdminRoute';
+
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
 // Lazy load pages
 const Home = lazy(() => import('./pages/Home'))
 const Blog = lazy(() => import('./pages/Blog'))
@@ -100,6 +103,11 @@ const router = createBrowserRouter([
         element: <Profile />
       },
     ]
+  },
+  {
+    path: "/admin",
+    element: <><Navbar /><AdminRoute><AdminDashboard /></AdminRoute></>,
+    errorElement: <ErrorPage />
   },
   {
     path: "/signup",
