@@ -36,108 +36,74 @@ const Footer = () => {
   const currentYear = new Date().getFullYear()
 
   const navLinks = [
-    { to: '/', label: 'Home', color: 'hover:text-blue-400' },
-    { to: '/blogs', label: 'Blogs', color: 'hover:text-emerald-400' },
-    { to: '/about', label: 'About Us', color: 'hover:text-amber-400' },
-    { to: '/faqs', label: 'FAQs', color: 'hover:text-rose-400' },
+    { to: '/', label: 'Home' },
+    { to: '/blogs', label: 'Blogs' },
+    { to: '/about', label: 'About Us' },
+    { to: '/faqs', label: 'FAQs' },
   ]
 
   const socialLinks = [
-    {
-      href: 'https://facebook.com',
-      icon: FaFacebookF,
-      label: 'Facebook',
-      color: 'bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white',
-    },
-    {
-      href: 'https://instagram.com',
-      icon: FaInstagram,
-      label: 'Instagram',
-      color: 'bg-pink-500/10 text-pink-400 hover:bg-pink-500 hover:text-white',
-    },
-    {
-      href: 'https://twitter.com',
-      icon: FaTwitter,
-      label: 'Twitter',
-      color: 'bg-sky-500/10 text-sky-400 hover:bg-sky-500 hover:text-white',
-    },
-    {
-      href: 'https://pinterest.com',
-      icon: FaPinterestP,
-      label: 'Pinterest',
-      color: 'bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white',
-    },
+    { href: 'https://facebook.com', icon: FaFacebookF, label: 'Facebook' },
+    { href: 'https://instagram.com', icon: FaInstagram, label: 'Instagram' },
+    { href: 'https://twitter.com', icon: FaTwitter, label: 'Twitter' },
+    { href: 'https://pinterest.com', icon: FaPinterestP, label: 'Pinterest' },
   ]
 
   return (
-    <footer className="relative bg-[#0a0a0f] text-white overflow-hidden">
-      {/* Top gradient accent line */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
-
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/3 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-500/3 rounded-full blur-3xl" />
+    <footer className="relative overflow-hidden border-t border-[#ded4c7] bg-[#f4f3ee] text-[#191817] dark:border-[#2b2623] dark:bg-[#141413] dark:text-[#f8f3ed]">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-20 left-10 h-64 w-64 rounded-full bg-[#c96442]/10 blur-3xl" />
+        <div className="absolute bottom-0 right-10 h-64 w-64 rounded-full bg-[#0866ff]/8 blur-3xl" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-16 pb-8">
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
-          
-          {/* ─── Brand Column ───────────────────────────────────── */}
-          <div className="lg:col-span-4 space-y-6">
+      <div className="relative mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+          <div className="space-y-6 lg:col-span-4">
             <Link to="/" className="inline-flex items-center gap-3 group">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 group-hover:scale-105 transition-all duration-300">
-                <img
-                  src={Logo}
-                  alt="Qspace"
-                  className="w-7 h-7 object-contain invert"
-                />
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#191817] shadow-sm transition-transform duration-300 group-hover:scale-105 dark:bg-[#f8f3ed]">
+                <img src={Logo} alt="Qspace" className="h-7 w-7 object-contain invert dark:invert-0" />
               </div>
-              <span className="text-xl font-bold tracking-tight">Qspace</span>
+              <span className="text-xl font-semibold tracking-[-0.02em]">Qspace</span>
             </Link>
 
-            <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
+            <p className="max-w-sm text-sm leading-6 text-[#5a554e] dark:text-[#b7ada4]">
               Empowering future minds through coding, AI, and innovation. Building the next generation of tech leaders.
             </p>
 
             <div className="space-y-3">
-              <div className="flex items-start gap-3 text-sm text-gray-400 group">
-                <MapPin size={16} className="mt-0.5 text-gray-500 group-hover:text-blue-400 transition-colors" />
-                <span className="group-hover:text-gray-300 transition-colors">
-                  2354, JHB South, 1841
-                </span>
+              <div className="flex items-start gap-3 text-sm text-[#5a554e] dark:text-[#b7ada4]">
+                <MapPin size={16} className="mt-0.5 text-[#8a847a]" />
+                <span>2354, JHB South, 1841</span>
               </div>
               <a
                 href="mailto:quorvexinstitute@gmail.com"
-                className="flex items-center gap-3 text-sm text-gray-400 hover:text-blue-400 transition-colors group"
+                className="flex items-center gap-3 text-sm text-[#5a554e] transition-colors hover:text-[#0866ff] dark:text-[#b7ada4]"
               >
-                <Mail size={16} className="text-gray-500 group-hover:text-blue-400 transition-colors" />
+                <Mail size={16} className="text-[#8a847a]" />
                 <span>quorvexinstitute@gmail.com</span>
               </a>
               <a
                 href="tel:+27634414863"
-                className="flex items-center gap-3 text-sm text-gray-400 hover:text-blue-400 transition-colors group"
+                className="flex items-center gap-3 text-sm text-[#5a554e] transition-colors hover:text-[#0866ff] dark:text-[#b7ada4]"
               >
-                <Phone size={16} className="text-gray-500 group-hover:text-blue-400 transition-colors" />
+                <Phone size={16} className="text-[#8a847a]" />
                 <span>+27 63 441 4863</span>
               </a>
             </div>
           </div>
 
-          {/* ─── Navigation Column ──────────────────────────────── */}
           <div className="lg:col-span-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-5">
+            <h3 className="mb-5 text-sm font-semibold uppercase tracking-[0.16em] text-[#5a554e] dark:text-[#b7ada4]">
               Navigation
             </h3>
             <ul className="space-y-3">
-              {navLinks.map(({ to, label, color }) => (
+              {navLinks.map(({ to, label }) => (
                 <li key={to}>
                   <Link
                     to={to}
-                    className={`group flex items-center gap-2 text-sm text-gray-400 ${color} transition-all duration-200`}
+                    className="group flex items-center gap-2 text-sm text-[#5a554e] transition-colors hover:text-[#0866ff] dark:text-[#b7ada4]"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-current transition-colors" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#cfc7bc] transition-colors group-hover:bg-[#0866ff]" />
                     {label}
                   </Link>
                 </li>
@@ -145,74 +111,60 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* ─── Connect Column ─────────────────────────────────── */}
           <div className="lg:col-span-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-5">
+            <h3 className="mb-5 text-sm font-semibold uppercase tracking-[0.16em] text-[#5a554e] dark:text-[#b7ada4]">
               Connect
             </h3>
             <div className="flex flex-wrap gap-2">
-              {socialLinks.map(({ href, icon: Icon, label, color }) => (
+              {socialLinks.map(({ href, icon: Icon, label }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-all duration-300 ${color}`}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-[#ded4c7] bg-white text-[#5a554e] transition-all duration-300 hover:border-[#0866ff] hover:bg-[#0866ff] hover:text-white dark:border-[#2b2623] dark:bg-[#1a1a18] dark:text-[#b7ada4]"
                 >
                   <Icon size={16} />
                 </a>
               ))}
             </div>
-            <p className="mt-4 text-xs text-gray-500">
+            <p className="mt-4 text-xs text-[#8a847a] dark:text-[#8f857c]">
               Follow us for daily updates and tech insights.
             </p>
           </div>
 
-          {/* ─── Newsletter Column ──────────────────────────────── */}
           <div className="lg:col-span-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-5">
+            <h3 className="mb-5 text-sm font-semibold uppercase tracking-[0.16em] text-[#5a554e] dark:text-[#b7ada4]">
               Stay Updated
             </h3>
-            <p className="text-sm text-gray-400 mb-4 leading-relaxed">
+            <p className="mb-4 text-sm leading-6 text-[#5a554e] dark:text-[#b7ada4]">
               Get the latest articles, tutorials, and updates delivered straight to your inbox.
             </p>
 
-            <form onSubmit={handleSubscribe} className="relative">
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full h-11 pl-4 pr-4 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 transition-all"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={subscribed}
-                  className={`h-11 px-5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all duration-300 ${
-                    subscribed
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-blue-600 hover:bg-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/25'
-                  }`}
-                >
-                  {subscribed ? (
-                    'Subscribed!'
-                  ) : (
-                    <>
-                      Subscribe
-                      <ArrowRight size={14} />
-                    </>
-                  )}
-                </button>
-              </div>
+            <form onSubmit={handleSubscribe} className="flex gap-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="h-11 flex-1 rounded-full border border-[#ded4c7] bg-white px-4 text-sm text-[#191817] outline-none transition-all placeholder:text-[#8a847a] focus:border-[#0866ff] focus:ring-2 focus:ring-[#0866ff]/15 dark:border-[#2b2623] dark:bg-[#1a1a18] dark:text-[#f8f3ed]"
+              />
+              <button
+                type="submit"
+                disabled={subscribed}
+                className={`inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-300 ${
+                  subscribed
+                    ? 'bg-[#6b7a3d] text-white'
+                    : 'bg-[#0866ff] text-white hover:bg-[#0143b5]'
+                }`}
+              >
+                {subscribed ? 'Subscribed!' : <>Subscribe <ArrowRight size={14} /></>}
+              </button>
             </form>
 
-            {/* Powered By */}
-            <div className="mt-8 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-2">
+            <div className="mt-8 rounded-2xl border border-[#ded4c7] bg-white/70 p-4 dark:border-[#2b2623] dark:bg-[#1a1a18]">
+              <p className="mb-2 text-xs font-medium uppercase tracking-[0.16em] text-[#8a847a]">
                 Powered By
               </p>
               <a
@@ -221,36 +173,36 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-2"
               >
-                <span className="text-emerald-400 font-semibold group-hover:text-emerald-300 transition-colors">
+                <span className="font-semibold text-[#c96442] transition-colors group-hover:text-[#b55738]">
                   Quorvex Institute
                 </span>
-                <ExternalLink size={12} className="text-gray-500 group-hover:text-emerald-400 transition-colors" />
+                <ExternalLink size={12} className="text-[#8a847a] transition-colors group-hover:text-[#0866ff]" />
               </a>
-              <p className="mt-1 text-xs text-gray-500 italic">
+              <p className="mt-1 text-xs italic text-[#8a847a] dark:text-[#8f857c]">
                 Learn. Code. Transform.
               </p>
             </div>
           </div>
         </div>
 
-        {/* ─── Bottom Bar ─────────────────────────────────────── */}
-        <div className="mt-16 pt-8 border-t border-white/[0.06]">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-gray-500 flex items-center gap-1.5">
+        <div className="mt-16 border-t border-[#ded4c7] pt-8 dark:border-[#2b2623]">
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <p className="flex items-center gap-1.5 text-xs text-[#8a847a] dark:text-[#8f857c]">
               &copy; {currentYear} Qspace. Made with
-              <Heart size={12} className="text-red-500 fill-red-500" />
+              <Heart size={12} className="fill-[#c96442] text-[#c96442]" />
               in South Africa.
             </p>
-            <div className="flex items-center gap-6 text-xs text-gray-500">
-              <Link to="/privacy" className="hover:text-gray-300 transition-colors">
+
+            <div className="flex items-center gap-5 text-xs text-[#8a847a] dark:text-[#8f857c]">
+              <Link to="/privacy" className="transition-colors hover:text-[#0866ff]">
                 Privacy Policy
               </Link>
-              <span className="w-1 h-1 rounded-full bg-gray-700" />
-              <Link to="/terms" className="hover:text-gray-300 transition-colors">
+              <span className="h-1 w-1 rounded-full bg-[#cfc7bc]" />
+              <Link to="/terms" className="transition-colors hover:text-[#0866ff]">
                 Terms of Service
               </Link>
-              <span className="w-1 h-1 rounded-full bg-gray-700" />
-              <Link to="/about" className="hover:text-blue-400 transition-colors flex items-center gap-1">
+              <span className="h-1 w-1 rounded-full bg-[#cfc7bc]" />
+              <Link to="/about" className="inline-flex items-center gap-1 transition-colors hover:text-[#0866ff]">
                 Learn more <ArrowRight size={10} />
               </Link>
             </div>
