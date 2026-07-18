@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import axios from 'axios'
 import { Button } from './ui/button'
 import { ArrowRight, Play, Sparkles, TrendingUp, Users, BookOpen } from 'lucide-react'
+import { formatCount } from '@/lib/formatCount'
+
+const API = 'https://kgserver-bjy2.onrender.com/api/v1'
 
 const Hero = () => {
   const containerRef = useRef(null)
@@ -37,10 +41,37 @@ const Hero = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
+  const [platformStats, setPlatformStats] = useState(null)
+
+  useEffect(() => {
+    axios.get(`${API}/blog/platform-stats`)
+      .then(res => {
+        if (res.data.success) setPlatformStats(res.data.stats)
+      })
+      .catch(() => {}) // stays null -> skeleton dashes, never a fake number
+  }, [])
+
+  // Real counts only — no placeholder/fake numbers. Shows "—" while loading
+  // or if the request fails, instead of ever inventing a figure.
   const stats = [
-    { icon: BookOpen, label: 'Articles', value: '500+', color: 'text-blue-500' },
-    { icon: Users, label: 'Readers', value: '10K+', color: 'text-emerald-500' },
-    { icon: TrendingUp, label: 'Trending', value: '50+', color: 'text-amber-500' },
+    {
+      icon: BookOpen,
+      label: 'Articles',
+      value: platformStats ? formatCount(platformStats.totalArticles) : '—',
+      color: 'text-blue-500',
+    },
+    {
+      icon: Users,
+      label: 'Readers',
+      value: platformStats ? formatCount(platformStats.totalUsers) : '—',
+      color: 'text-emerald-500',
+    },
+    {
+      icon: TrendingUp,
+      label: 'Total Views',
+      value: platformStats ? formatCount(platformStats.totalViews) : '—',
+      color: 'text-amber-500',
+    },
   ]
 
   return (
