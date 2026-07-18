@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { motion } from 'framer-motion'
+import axios from 'axios'
 import {
   PenLine,
   Users,
@@ -17,8 +18,20 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import aboutImg from "../assets/About-blog.avif"
+import { formatCount } from '@/lib/formatCount'
+
+const API = 'https://kgserver-bjy2.onrender.com/api/v1'
 
 const About = () => {
+  const [platformStats, setPlatformStats] = useState(null)
+
+  useEffect(() => {
+    axios.get(`${API}/blog/platform-stats`)
+      .then(res => {
+        if (res.data.success) setPlatformStats(res.data.stats)
+      })
+      .catch(() => {})
+  }, [])
   const values = [
     {
       icon: PenLine,
@@ -55,10 +68,10 @@ const About = () => {
   ]
 
   const stats = [
-    { icon: BookOpen, value: '500+', label: 'Articles Published', color: 'text-blue-500' },
-    { icon: Users, value: '10K+', label: 'Active Readers', color: 'text-emerald-500' },
-    { icon: MessageCircle, value: '50K+', label: 'Comments', color: 'text-violet-500' },
-    { icon: TrendingUp, value: '98%', label: 'Growth Rate', color: 'text-amber-500' },
+    { icon: BookOpen, value: platformStats ? formatCount(platformStats.totalArticles) : '—', label: 'Articles Published', color: 'text-blue-500' },
+    { icon: Users, value: platformStats ? formatCount(platformStats.totalUsers) : '—', label: 'Registered Readers', color: 'text-emerald-500' },
+    { icon: MessageCircle, value: platformStats ? formatCount(platformStats.totalComments) : '—', label: 'Comments', color: 'text-violet-500' },
+    { icon: TrendingUp, value: platformStats ? formatCount(platformStats.totalLikes) : '—', label: 'Total Likes', color: 'text-amber-500' },
   ]
 
   const features = [

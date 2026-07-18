@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
 import { toast } from 'sonner'
+import { formatCount } from '@/lib/formatCount'
 
 // UI Components
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
@@ -56,6 +57,15 @@ const Profile = () => {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('about')
+  const [myStats, setMyStats] = useState(null)
+
+  useEffect(() => {
+    axios.get('https://kgserver-bjy2.onrender.com/api/v1/blog/my-stats', { withCredentials: true })
+      .then(res => {
+        if (res.data.success) setMyStats(res.data.stats)
+      })
+      .catch(() => {}) // stays null -> shows "—", never a fake number
+  }, [])
 
   const [input, setInput] = useState({
     firstName: user?.firstName || '',
@@ -154,12 +164,13 @@ const Profile = () => {
     },
   ]
 
-  // Stats data
+  // Stats data — real, fetched per-user. Shows "—" while loading/on error,
+  // never a placeholder number.
   const stats = [
-    { label: 'Articles', value: '24', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
-    { label: 'Comments', value: '156', icon: MessageSquare, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
-    { label: 'Likes', value: '1.2k', icon: Heart, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-500/10' },
-    { label: 'Views', value: '8.5k', icon: Eye, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+    { label: 'Articles', value: myStats ? formatCount(myStats.totalArticles) : '—', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+    { label: 'Comments', value: myStats ? formatCount(myStats.totalComments) : '—', icon: MessageSquare, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
+    { label: 'Likes', value: myStats ? formatCount(myStats.totalLikes) : '—', icon: Heart, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-500/10' },
+    { label: 'Views', value: myStats ? formatCount(myStats.totalViews) : '—', icon: Eye, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
   ]
 
   const profileImage = useMemo(() => {
